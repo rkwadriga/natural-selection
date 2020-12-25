@@ -50,7 +50,7 @@ class Token implements TokenInterface
     private \DateTime $expired_at;
 
     /**
-     * @ORM\ManyToOne(targetEntity=User::class, inversedBy="token")
+     * @ORM\ManyToOne(targetEntity=User::class, inversedBy="tokens")
      * @ORM\JoinColumn(nullable=false)
      */
     private User $user;
@@ -102,7 +102,7 @@ class Token implements TokenInterface
     }
 
     /**
-     * @param UserInterface $user
+     * @param User $user
      * @return $this
      */
     public function setUser($user): self
@@ -162,16 +162,16 @@ class Token implements TokenInterface
 
         if (isset($data['created_at'])) {
             if ($data['created_at'] instanceof \DateTime) {
-                $this->createdAt = $data['created_at'];
+                $this->created_at = $data['created_at'];
             } elseif (is_string($data['created_at'])) {
-                $this->createdAt = new \DateTime($data['created_at']);
+                $this->created_at = new \DateTime($data['created_at']);
             }
         }
         if (isset($data['updated_at'])) {
             if ($data['updated_at'] instanceof \DateTime) {
-                $this->updatedAt = $data['updated_at'];
+                $this->updated_at = $data['updated_at'];
             } elseif (is_string($data['updated_at'])) {
-                $this->createdAt = new \DateTime($data['updated_at']);
+                $this->created_at = new \DateTime($data['updated_at']);
             }
         }
     }

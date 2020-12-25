@@ -153,7 +153,7 @@ class User implements UserInterface
     /**
      * @return Token[]
      */
-    public function getTokens(): ArrayCollection
+    public function getTokens()
     {
         return $this->tokens;
     }

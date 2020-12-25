@@ -59,6 +59,7 @@ class AccessTokenAuthenticator extends AbstractGuardAuthenticator
         /** @var TokenRepository $repository */
         $repository = $this->doctrine->getRepository(Token::class);
         $token = $repository->findOneBy(['access_token' => (string)$credentials['access_token']]);
+
         if ($token === null) {
             throw new AuthException('Invalid access token', Response::HTTP_FORBIDDEN);
         }
@@ -67,21 +68,20 @@ class AccessTokenAuthenticator extends AbstractGuardAuthenticator
             throw new AuthException('Access token expired', Response::HTTP_UNAUTHORIZED);
         }
 
-        //return null;
         return $token->getUser()->setToken($token);
     }
 
-    public function checkCredentials($credentials, UserInterface $user)
+    public function checkCredentials($credentials, UserInterface $user): bool
     {
         return true;
     }
 
-    public function onAuthenticationFailure(Request $request, AuthenticationException $exception)
+    public function onAuthenticationFailure(Request $request, AuthenticationException $exception): ?Response
     {
         return null;
     }
 
-    public function onAuthenticationSuccess(Request $request, TokenInterface $token, string $providerKey)
+    public function onAuthenticationSuccess(Request $request, TokenInterface $token, string $providerKey): ?Response
     {
         return null;
     }
@@ -93,8 +93,12 @@ class AccessTokenAuthenticator extends AbstractGuardAuthenticator
 
     /**
      * Called when authentication is needed, but it's not sent
+     *
+     * @param Request $request
+     * @param AuthenticationException|null $authException
+     * @throws AuthException
      */
-    public function start(Request $request, AuthenticationException $authException = null)
+    public function start(Request $request, AuthenticationException $authException = null): void
     {
         throw new AuthException('Authentication Required', Response::HTTP_UNAUTHORIZED, $authException);
     }

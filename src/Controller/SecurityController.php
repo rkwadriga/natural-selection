@@ -10,7 +10,7 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class SecurityController extends AbstractController
 {
-    private $userProvider;
+    private AccessTokenUserProvider $userProvider;
 
     public function __construct(AccessTokenUserProvider $userProvider)
     {

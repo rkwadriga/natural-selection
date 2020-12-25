@@ -82,7 +82,7 @@ class AccessTokenUserProvider implements UserProviderInterface
         }
         // Check refresh token
         if ($user->getToken()->getRefreshToken() !== base64_decode($refreshToken)) {
-            throw new AuthException('Refresh token is missed', Response::HTTP_FORBIDDEN);
+            throw new AuthException('Invalid refresh token', Response::HTTP_FORBIDDEN);
         }
         // Check is refresh token is not expired
         if (AccessTokenHelper::isRefreshTokenExpired($user->getToken()->getUpdatedAt())) {
@@ -130,7 +130,7 @@ class AccessTokenUserProvider implements UserProviderInterface
 
     public function supportsClass(string $class): bool
     {
-        return $class === User::class;
+        return true;
     }
 
     /**
@@ -163,7 +163,6 @@ class AccessTokenUserProvider implements UserProviderInterface
     {
         $token = $user->getToken()->setAccessToken(AccessTokenHelper::generateAccessToken($user))
             ->setRefreshToken(AccessTokenHelper::generateAccessToken($user))
-            ->setCreatedAt(new \DateTime())
             ->setExpiredAt(AccessTokenHelper::getAccessTokenExpiredAt())
         ;
         $manager = $this->doctrine->getManager();
