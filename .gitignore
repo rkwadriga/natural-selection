@@ -16,6 +16,11 @@
 /phpunit.xml
 ###< symfony/phpunit-bridge ###
 
+###> Frontend ###
+/public/node_modules/
+/public/dist/
+/public/package-lock.json
+###< Frontend ###
 
 /composer.lock
 /.idea
