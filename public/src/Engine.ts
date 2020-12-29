@@ -61,9 +61,9 @@ export class Engine implements EngineInterface
             hasCreature = true;
             while (hasCreature === true) {
                 x = MathHelper.randomInt(0, width);
-                hasCreature = this.field.hasCreature(x, 0);
+                hasCreature = this.field.hasCreature(x, -1);
             }
-            this.field.addCreature(Engine.newCreature(x, 0));
+            this.field.addCreature(Engine.newCreature(x, -1));
         }
     }
 

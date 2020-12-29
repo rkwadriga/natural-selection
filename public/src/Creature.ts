@@ -8,8 +8,6 @@ enum HorizontalDirection {Left, Right}
 export class Creature implements CreatureInterface
 {
     private field: FieldInterface;
-    private fieldWidth: number;
-    private fieldHeight: number;
     private x: number;
     private y: number;
     private coordinates: string;
@@ -18,8 +16,6 @@ export class Creature implements CreatureInterface
 
     constructor(x: number, y: number)
     {
-        this.fieldWidth = 0;
-        this.fieldHeight = 0;
         this.x = x;
         this.y = y;
         this.verticalDirection = VerticalDirection.Down;
@@ -29,8 +25,6 @@ export class Creature implements CreatureInterface
     public setField(field: FieldInterface): void
     {
         this.field = field;
-        this.fieldWidth = field.getWidth();
-        this.fieldHeight = field.getHeight();
     }
 
     public getX(): number
@@ -45,24 +39,24 @@ export class Creature implements CreatureInterface
 
     public move(): void
     {
-        let x = MathHelper.randomInt(0, 1);
+        let x = (this.y >= 0) ? MathHelper.randomInt(0, 1) : 0;
         let y = MathHelper.randomInt(0, 1);
         this.checkDirection(x, y);
 
         switch (this.verticalDirection) {
             case VerticalDirection.Down:
-                this.x += x;
+                this.y += y;
                 break;
             case VerticalDirection.Up:
-                this.x -= x;
+                this.y -= y;
                 break;
         }
         switch (this.horizontalDirection) {
             case HorizontalDirection.Right:
-                this.y += y;
+                this.x += x;
                 break;
             case HorizontalDirection.Left:
-                this.y -= y;
+                this.x -= x;
                 break;
         }
     }
@@ -84,46 +78,46 @@ export class Creature implements CreatureInterface
 
     private checkDirection(x: number, y: number): void
     {
-        let newX: number;
         let newY: number;
+        let newX: number;
         switch (this.verticalDirection) {
             case VerticalDirection.Down:
-                newX = this.x + x;
+                newY = this.y + y;
                 break;
             case VerticalDirection.Up:
-                newX = this.x - x;
+                newY = this.y - y;
                 break;
         }
         switch (this.horizontalDirection) {
             case HorizontalDirection.Right:
-                newY = this.y + y;
+                newX = this.x + x;
                 break;
             case HorizontalDirection.Left:
-                newY = this.y - y;
+                newX = this.x - x;
                 break;
         }
         let hasCreature = this.field.hasCreature(newX, newY);
 
         switch (this.verticalDirection) {
             case VerticalDirection.Down:
-                if (newX >= this.fieldWidth - 1 || hasCreature) {
+                if (newY >= this.field.getHeight() || hasCreature) {
                     this.verticalDirection = VerticalDirection.Up;
                 }
                 break;
             case VerticalDirection.Up:
-                if (newX < 0 || hasCreature) {
+                if (newY < 0 || hasCreature) {
                     this.verticalDirection = VerticalDirection.Down;
                 }
                 break;
         }
         switch (this.horizontalDirection) {
             case HorizontalDirection.Right:
-                if (newY >= this.fieldHeight - 1 || hasCreature) {
+                if (newX >= this.field.getWidth() - 1 || hasCreature) {
                     this.horizontalDirection = HorizontalDirection.Left;
                 }
                 break;
             case HorizontalDirection.Left:
-                if (newY < 0 || hasCreature) {
+                if (newX < 0 || hasCreature) {
                     this.horizontalDirection = HorizontalDirection.Right;
                 }
                 break;
