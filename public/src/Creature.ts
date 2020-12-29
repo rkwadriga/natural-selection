@@ -112,12 +112,12 @@ export class Creature implements CreatureInterface
         }
         switch (this.horizontalDirection) {
             case HorizontalDirection.Right:
-                if (newX >= this.field.getWidth() - 1 || hasCreature) {
+                if (newX >= this.field.getWidth() - 2 || hasCreature) {
                     this.horizontalDirection = HorizontalDirection.Left;
                 }
                 break;
             case HorizontalDirection.Left:
-                if (newX < 0 || hasCreature) {
+                if (newX < -1 || hasCreature) {
                     this.horizontalDirection = HorizontalDirection.Right;
                 }
                 break;

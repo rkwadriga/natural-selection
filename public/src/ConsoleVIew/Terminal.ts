@@ -10,7 +10,7 @@ export class Terminal
         // Top and left lines
         ctx.bg(128, 255, 0);
         ctx.fg(255, 0, 0);
-        for (let x = 0; x < width + 7; x++) {
+        for (let x = 0; x < width + 5; x++) {
             ctx.text(x, 0, '#');
         }
         for (let y = 0; y < height + 2; y++) {
@@ -18,7 +18,7 @@ export class Terminal
         }
 
         // Field
-        ctx.box(4, 2, width, height);
+        ctx.box(3, 2, width, height);
 
         // Points
         points.forEach(point => {
@@ -29,11 +29,11 @@ export class Terminal
         // Right and bottom lines
         ctx.bg(128, 255, 0);
         ctx.fg(255, 0, 0);
-        for (let x = 0; x < width + 7; x++) {
+        for (let x = 0; x < width + 5; x++) {
             ctx.text(x, height + 2, '#');
         }
         for (let y = 0; y < height + 2; y++) {
-            ctx.text(width + 5, y, '##');
+            ctx.text(width + 3, y, '##');
         }
 
         ctx.cursor.restore();
