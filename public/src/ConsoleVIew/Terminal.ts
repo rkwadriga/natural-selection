@@ -23,7 +23,8 @@ export class Terminal
         // Points
         points.forEach(point => {
             ctx.bg(point[2], point[3], point[4]);
-            ctx.box(4 + point[0], point[1] + 2, 2, 1);
+            ctx.box(3 + point[0], point[1] + 2, 2, 1);
+            //ctx.text(4 + point[0], point[1] + 2, '\u2B24');
         });
 
         // Right and bottom lines
