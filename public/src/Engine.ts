@@ -21,8 +21,36 @@ export class Engine implements EngineInterface
     public run(): number
     {
         this.addCreatures();
+
+        let time = 0;
+        let period = 1000 / this.params.runSpeed;
+
+        // Draw a field with creatures in a start position
         this.client.drawField();
+
+        let interval = setInterval(() => {
+            // Clear console
+            console.clear();
+
+            // Make all creatures to move
+            this.iterate();
+            this.client.drawField();
+
+            // Stop the process when the time is run out
+            if ((time += period) >= this.params.runtime * 1000) {
+                clearInterval(interval);
+            }
+        }, period);
         return 0;
+    }
+
+    private iterate()
+    {
+        let creatures = this.field.getCreatures();
+        for (let key in creatures) {
+            let creature = creatures[key];
+            creature.move();
+        }
     }
 
     private addCreatures(): void
@@ -35,11 +63,11 @@ export class Engine implements EngineInterface
                 x = MathHelper.randomInt(0, width);
                 hasCreature = this.field.hasCreature(x, 0);
             }
-            this.field.addCreature(this.newCreature(x, 0));
+            this.field.addCreature(Engine.newCreature(x, 0));
         }
     }
 
-    private newCreature(x: number, y: number): CreatureInterface
+    private static newCreature(x: number, y: number): CreatureInterface
     {
         return new Creature(x, y);
     }

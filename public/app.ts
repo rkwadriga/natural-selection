@@ -7,10 +7,11 @@ import {Field} from "./src/Field";
 
 let params = new EngineParams();
 params.creaturesCount = 10;
-params.runtime = 10;
+params.runtime = 60;
+params.runSpeed = 10;
 
-let fieldWidth: number = 20;
-let fieldHeight: number = 5;
+let fieldWidth: number = 50;
+let fieldHeight: number = 20;
 
 let field = new Field(fieldWidth, fieldHeight);
 let client = new ConsoleClient(field);

@@ -28,6 +28,7 @@ export class Field implements FieldInterface
         let coordinates = Field.coordinates(creature.getX(), creature.getY());
         creature.setCoordinates(coordinates);
         this.creatures[coordinates] = creature;
+        creature.setField(this);
     }
 
     public getCreatures(): Array<CreatureInterface>

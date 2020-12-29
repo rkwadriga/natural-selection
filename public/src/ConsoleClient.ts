@@ -1,7 +1,7 @@
 import {ClientInterface} from './ClientInterface';
-import {FieldInterface} from "./FieldInterface";
+import {FieldInterface} from './FieldInterface';
+import {Terminal} from './ConsoleVIew/Terminal';
 import {CreatureInterface} from "./CreatureInterface";
-import {Creature} from "./Creature";
 
 export class ConsoleClient implements ClientInterface
 {
@@ -11,30 +11,20 @@ export class ConsoleClient implements ClientInterface
         this.field = field;
     }
 
-    public drawField(): void
+    public drawField()
     {
-        let field: string = '';
-        let width: number = this.field.getWidth();
-        let height: number = this.field.getHeight();
+        let creatures = this.field.getCreatures();
+        let points: number[][] = [];
+        let creature: CreatureInterface;
+        let color: Array<number>;
 
-        for (let y = 0; y < height; y++) {
-            field += "\n";
-            for (let x = 0; x < width; x++) {
-                let figure: string = '  ';
-                let creature: CreatureInterface = this.field.getCreature(x, y)
-                if (creature === undefined) {
-                    if (y === 0 || y === height - 1) {
-                        figure = '__';
-                    } else if (x === 0 || x === width - 1) {
-                        figure = '|  ';
-                    }
-                } else {
-                    figure = ' O';
-                }
-                field += figure;
-            }
+        for (let key in creatures) {
+            creature = creatures[key];
+            color = creature.getColor();
+            points.push([creature.getX(), creature.getY(), color[0], color[1], color[2]])
         }
-        console.log(field);
+
+        (new Terminal()).draw(this.field.getWidth(), this.field.getHeight(), points);
     }
 
     public getField(): FieldInterface
