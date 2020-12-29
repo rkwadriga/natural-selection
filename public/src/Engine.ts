@@ -5,6 +5,7 @@ import {CreatureInterface} from "./CreatureInterface";
 import {ClientInterface} from "./ClientInterface";
 import {FieldInterface} from "./FieldInterface";
 import {MathHelper} from "./Helpers/MathHelper";
+import {FieldHelper} from "./Helpers/FieldHelper";
 
 export class Engine implements EngineInterface
 {
@@ -55,15 +56,14 @@ export class Engine implements EngineInterface
 
     private addCreatures(): void
     {
-        let width: number = this.field.getWidth() - 1;
-        let x: number = 0, hasCreature: boolean;
+        let x: number, y: number, hasCreature: boolean;
         for (let i = 0; i < this.params.creaturesCount; i++) {
             hasCreature = true;
             while (hasCreature === true) {
-                x = MathHelper.randomInt(0, width);
-                hasCreature = this.field.hasCreature(x, -1);
+                [x, y] = FieldHelper.getRandomStartPosition(this.field.getWidth(), this.field.getHeight());
+                hasCreature = this.field.hasCreature(x, y);
             }
-            this.field.addCreature(Engine.newCreature(x, -1));
+            this.field.addCreature(Engine.newCreature(x, y));
         }
     }
 

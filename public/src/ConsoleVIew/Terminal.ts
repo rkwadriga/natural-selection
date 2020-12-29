@@ -20,13 +20,6 @@ export class Terminal
         // Field
         ctx.box(3, 2, width, height);
 
-        // Points
-        points.forEach(point => {
-            ctx.bg(point[2], point[3], point[4]);
-            ctx.box(3 + point[0], point[1] + 2, 2, 1);
-            //ctx.text(4 + point[0], point[1] + 2, '\u2B24');
-        });
-
         // Right and bottom lines
         ctx.bg(128, 255, 0);
         ctx.fg(255, 0, 0);
@@ -36,6 +29,13 @@ export class Terminal
         for (let y = 0; y < height + 2; y++) {
             ctx.text(width + 3, y, '##');
         }
+
+        // Points
+        points.forEach(point => {
+            ctx.bg(point[2], point[3], point[4]);
+            ctx.box(3 + point[0], point[1] + 2, 2, 1);
+            //ctx.text(4 + point[0], point[1] + 2, '\u2B24');
+        });
 
         ctx.cursor.restore();
     }

@@ -1,6 +1,7 @@
 import {CreatureInterface} from "./CreatureInterface";
 import {MathHelper} from "./Helpers/MathHelper";
 import {FieldInterface} from "./FieldInterface";
+import {FieldHelper} from "./Helpers/FieldHelper";
 
 enum VerticalDirection {Up, Down}
 enum HorizontalDirection {Left, Right}
@@ -39,9 +40,9 @@ export class Creature implements CreatureInterface
 
     public move(): void
     {
-        let x = (this.y >= 0) ? MathHelper.randomInt(0, 1) : 0;
-        let y = MathHelper.randomInt(0, 1);
-        this.checkDirection(x, y);
+        let x: number, y: number;
+        [x, y] = FieldHelper.getRandomStep(this.x, this.y, this.field.getWidth(), this.field.getHeight());
+        this.setDirection(x, y);
 
         switch (this.verticalDirection) {
             case VerticalDirection.Down:
@@ -76,7 +77,7 @@ export class Creature implements CreatureInterface
         return [255, 0, 0];
     }
 
-    private checkDirection(x: number, y: number): void
+    private setDirection(x: number, y: number): void
     {
         let newY: number;
         let newX: number;
