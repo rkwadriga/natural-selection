@@ -30,11 +30,20 @@ export class Terminal
             ctx.text(width + 3, y, '##');
         }
 
-        // Points
+        // Add food
         points.forEach(point => {
-            ctx.bg(point[2], point[3], point[4]);
-            ctx.box(3 + point[0], point[1] + 2, 2, 1);
-            //ctx.text(4 + point[0], point[1] + 2, '\u2B24');
+            if (point[0] === 0) {
+                ctx.fg(point[4], point[5], point[6]);
+                ctx.text(point[1] + 3, point[2] + 2, point[3].toString());
+            }
+        });
+
+        // Add creatures
+        points.forEach(point => {
+            if (point[0] === 1) {
+                ctx.fg(point[4], point[5], point[6]);
+                ctx.text(point[1] + 3, point[2] + 2, '\u2B24');
+            }
         });
 
         ctx.cursor.restore();

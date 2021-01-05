@@ -1,20 +1,15 @@
 // tsc app.ts && node app.js
 
-import {Engine} from './src/Engine';
-import {EngineParams} from './src/EngineParams';
-import {ConsoleClient} from './src/ConsoleClient';
-import {Field} from "./src/Field";
+import {ConsoleDrawer} from "./src/Drawer/ConsoleDrawer";
+import {ConsoleField} from "./src/Field/ConsoleField";
+import {Engine} from "./src/Engine";
 
-let params = new EngineParams();
-params.creaturesCount = 20;
-params.runtime = 60;
-params.runSpeed = 10;
+let config = {
 
-let fieldWidth: number = 30;
-let fieldHeight: number = 15;
+};
 
-let field = new Field(fieldWidth, fieldHeight);
-let client = new ConsoleClient(field);
-let eng = new Engine(client, params);
-eng.run();
+let drawer = new ConsoleDrawer();
+let field = new ConsoleField(30, 15);
 
+let engine = new Engine(drawer, field);
+engine.run(config);
