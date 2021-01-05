@@ -1,14 +1,15 @@
 import {DrawableItem} from "./DrawableItem";
 import {IBacteria} from "./IBacteria";
 import {IFood} from "./IFood";
+import {ItemType} from "./ItemType";
 
 export class Bacteria extends DrawableItem implements IBacteria
 {
     protected energy: number;
 
-    constructor(x: number, y: number, color = [0, 0, 0], image: "", energy = 10)
+    constructor(x: number, y: number, color = [0, 0, 0], image = "", energy = 10, type?: ItemType)
     {
-        super(x, y, color, image);
+        super(x, y, color, image, type);
         this.energy = energy;
     }
 

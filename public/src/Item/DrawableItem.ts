@@ -1,18 +1,25 @@
 import {IDrawableItem} from "./IDrawableItem";
+import {ItemType} from "./ItemType";
 
 export class DrawableItem implements IDrawableItem
 {
+    protected readonly type: ItemType;
     protected readonly x: number;
     protected readonly y: number;
     protected readonly color: Array<number>;
     protected readonly image: string;
 
-    constructor(x: number, y: number, color = [0, 0, 0], image: "")
+    constructor(x: number, y: number, color = [0, 0, 0], image = "", type?: ItemType)
     {
+        this.type = type;
         this.x = x;
         this.y = y;
         this.color = color;
         this.image = image;
+    }
+
+    getType(): ItemType {
+        return this.type;
     }
 
     getX(): number {

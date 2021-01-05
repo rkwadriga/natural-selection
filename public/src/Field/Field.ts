@@ -1,5 +1,6 @@
 import {IField} from "./IField";
 import {IDrawableItem} from "../Item/IDrawableItem";
+import {ItemType} from "../Item/ItemType";
 
 export class Field implements IField
 {
@@ -30,7 +31,14 @@ export class Field implements IField
         return this.items[coordinates] === undefined ? null : this.items[coordinates];
     }
 
-    getItems(): Array<IDrawableItem> {
-        return this.items;
+    getItems(type = null): Array<IDrawableItem> {
+        let items = [];
+        for (let coordinates in this.items) {
+            let item = this.items[coordinates];
+            if (type === null || type === item.getType()) {
+                items.push(item);
+            }
+        }
+        return items;
     }
 }
