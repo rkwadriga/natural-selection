@@ -24,7 +24,8 @@ export class Engine
         this.itemService.generateItemsAndAddThemToField(this.field, ItemType.EDIBLE_BACTERIA, config.edibleBacteriaCount);
         this.itemService.generateItemsAndAddThemToField(this.field, ItemType.PREDATORY_BACTERIA, config.predatoryBacteriaCount);
 
-        console.log(this.field.getItems(ItemType.EDIBLE_BACTERIA));
+        // Draw the start position of field
+        this.drawer.draw(this.field);
 
         return 0;
     }

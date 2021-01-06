@@ -9,7 +9,7 @@ export class DrawableItem implements IDrawableItem
     protected readonly color: Array<number>;
     protected readonly image: string;
 
-    constructor(x: number, y: number, color = [0, 0, 0], image = "", type?: ItemType)
+    constructor(x: number, y: number, color = [255, 255, 255], image = "\u2B24", type?: ItemType)
     {
         this.type = type;
         this.x = x;
