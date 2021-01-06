@@ -9,7 +9,7 @@ let config = new Config({
     width: 30,
     height: 15,
     foodCount: 30,
-    edibleBacteriaCount: 7,
+    edibleBacteriaCount: 15,
     predatoryBacteriaCount: 0,
     speed: 10,
     duration: 30

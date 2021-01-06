@@ -69,36 +69,12 @@ export class FieldHelper
 
     public static isHorizontalDirectionCorrect(newX: number, newY: number, horizontalDirection: HorizontalDirection, w: number, h: number): boolean
     {
-        switch (horizontalDirection) {
-            case HorizontalDirection.RIGHT:
-                if (newX >= w) {
-                    return false;
-                }
-                break;
-            case HorizontalDirection.LEFT:
-                if (newX < 0) {
-                    return false;
-                }
-                break;
-        }
-        return true;
+        return (horizontalDirection === HorizontalDirection.RIGHT && newX < w) || (horizontalDirection === HorizontalDirection.LEFT && newX >= 0);
     }
 
     public static isVerticalDirectionCorrect(newX: number, newY: number, verticalDirection: VerticalDirection, w: number, h: number): boolean
     {
-        switch (verticalDirection) {
-            case VerticalDirection.DOWN:
-                if (newY >= h) {
-                    return false;
-                }
-                break;
-            case VerticalDirection.TOP:
-                if (newY < 0) {
-                    return false;
-                }
-                break;
-        }
-        return true;
+        return (verticalDirection === VerticalDirection.DOWN && newY < h) || (verticalDirection === VerticalDirection.TOP && newY >= 0);
     }
 
     public static switchDirection(horizontalDirection: HorizontalDirection, verticalDirection: VerticalDirection): Array<number>
