@@ -1,5 +1,5 @@
 import {IDrawableItem} from "../Item/IDrawableItem";
-import {ItemType} from "../Item/ItemType";
+import {ItemType} from "../Types/ItemType";
 
 export interface IField
 {
@@ -8,4 +8,5 @@ export interface IField
     getItems(type?: ItemType): Array<IDrawableItem>;
     getItem(coordinates: string): IDrawableItem;
     addItem(item: IDrawableItem): void;
+    removeItem(item: IDrawableItem): void;
 }

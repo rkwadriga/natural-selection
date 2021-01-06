@@ -1,6 +1,6 @@
 import {IField} from "./IField";
 import {IDrawableItem} from "../Item/IDrawableItem";
-import {ItemType} from "../Item/ItemType";
+import {ItemType} from "../Types/ItemType";
 
 export class Field implements IField
 {
@@ -23,12 +23,16 @@ export class Field implements IField
         return this.height;
     }
 
+    getItem(coordinates: string): IDrawableItem {
+        return this.items[coordinates] === undefined ? null : this.items[coordinates];
+    }
+
     addItem(item: IDrawableItem): void {
         this.items[item.getCoordinates()] = item;
     }
 
-    getItem(coordinates: string): IDrawableItem {
-        return this.items[coordinates] === undefined ? null : this.items[coordinates];
+    removeItem(item: IDrawableItem): void {
+        this.items[item.getCoordinates()] = undefined;
     }
 
     getItems(type = null): Array<IDrawableItem> {

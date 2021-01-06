@@ -7,8 +7,8 @@ export class ConsoleDrawer extends Drawer
     draw(field: IField): void {
         let width = field.getWidth();
         let height = field.getHeight();
-        let backgroundColor = [255, 255, 153];
-        let symbolsColor = [255, 0, 0];
+        let backgroundColor = [248, 255, 7];
+        let symbolsColor = [200, 0, 100];
 
         // Top and left lines
         ctx.bg(backgroundColor[0], backgroundColor[1], backgroundColor[2]);
@@ -39,14 +39,6 @@ export class ConsoleDrawer extends Drawer
             ctx.fg(color[0], color[1], color[2]);
             ctx.text(item.getX() + 3, item.getY() + 2, item.getImage());
         });
-
-        // Add creatures
-        /*points.forEach(point => {
-            if (point[0] === 1) {
-                ctx.fg(point[4], point[5], point[6]);
-                ctx.text(point[1] + 3, point[2] + 2, '\u2B24');
-            }
-        });*/
 
         ctx.cursor.restore();
     }

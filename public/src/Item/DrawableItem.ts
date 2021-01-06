@@ -1,16 +1,19 @@
 import {IDrawableItem} from "./IDrawableItem";
-import {ItemType} from "./ItemType";
+import {ItemType} from "../Types/ItemType";
+import {IField} from "../Field/IField";
 
 export class DrawableItem implements IDrawableItem
 {
+    protected readonly field: IField;
     protected readonly type: ItemType;
-    protected readonly x: number;
-    protected readonly y: number;
+    protected x: number;
+    protected y: number;
     protected readonly color: Array<number>;
     protected readonly image: string;
 
-    constructor(x: number, y: number, color = [255, 255, 255], image = "\u2B24", type?: ItemType)
+    constructor(field: IField, x: number, y: number, color = [255, 255, 255], image = "\u2B24", type?: ItemType)
     {
+        this.field = field;
         this.type = type;
         this.x = x;
         this.y = y;
@@ -31,7 +34,7 @@ export class DrawableItem implements IDrawableItem
     }
 
     getCoordinates(): string {
-        return this.getX() + "x" + this.getY();
+        return DrawableItem.createCoordinates(this.getX(), this.getY());
     }
 
     getColor(): Array<number> {
@@ -40,5 +43,12 @@ export class DrawableItem implements IDrawableItem
 
     getImage(): string {
         return this.image;
+    }
+
+
+
+    protected static createCoordinates(x: number, y: number): string
+    {
+        return x + "x" + y;
     }
 }

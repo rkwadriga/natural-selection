@@ -1,8 +1,10 @@
-import {IDrawableItemFactory} from "./IDrawableItemFactory";
-import {EdibleBacteria} from "./EdibleBacteria";
-import {Bacteria} from "./Bacteria";
+import {IField} from "../Field/IField";
 
 export class BacteriaFactory
 {
+    protected readonly field: IField;
 
+    constructor(field: IField) {
+        this.field = field;
+    }
 }
