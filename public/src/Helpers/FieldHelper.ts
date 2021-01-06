@@ -67,12 +67,12 @@ export class FieldHelper
         ];
     }
 
-    public static isHorizontalDirectionCorrect(newX: number, newY: number, horizontalDirection: HorizontalDirection, w: number, h: number): boolean
+    public static isHorizontalDirectionCorrect(horizontalDirection: HorizontalDirection, w: number, newX: number): boolean
     {
         return (horizontalDirection === HorizontalDirection.RIGHT && newX < w) || (horizontalDirection === HorizontalDirection.LEFT && newX >= 0);
     }
 
-    public static isVerticalDirectionCorrect(newX: number, newY: number, verticalDirection: VerticalDirection, w: number, h: number): boolean
+    public static isVerticalDirectionCorrect(verticalDirection: VerticalDirection, h: number, newY: number): boolean
     {
         return (verticalDirection === VerticalDirection.DOWN && newY < h) || (verticalDirection === VerticalDirection.TOP && newY >= 0);
     }

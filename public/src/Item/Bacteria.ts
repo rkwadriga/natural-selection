@@ -56,7 +56,7 @@ export class Bacteria extends DrawableItem implements IBacteria
         if (!this.canGo(newX, newY)) {
             let newHorizontalDirection: HorizontalDirection, newVerticalDirection: VerticalDirection;
             [newHorizontalDirection, newVerticalDirection] = FieldHelper.switchDirection(this.horizontalDirection, this.verticalDirection);
-            if (FieldHelper.isHorizontalDirectionCorrect(newX, newY, this.horizontalDirection, this.field.getWidth(), this.field.getHeight())) {
+            if (FieldHelper.isHorizontalDirectionCorrect(this.horizontalDirection, this.field.getWidth(), newX)) {
                 this.verticalDirection = newVerticalDirection;
             } else {
                 this.horizontalDirection = newHorizontalDirection;
@@ -75,7 +75,7 @@ export class Bacteria extends DrawableItem implements IBacteria
         if (item !== null && item.getType() !== ItemType.FOOD) {
             return false;
         }
-        return FieldHelper.isHorizontalDirectionCorrect(newX, newY, this.horizontalDirection, this.field.getWidth(), this.field.getHeight())
-            && FieldHelper.isVerticalDirectionCorrect(newX, newY, this.verticalDirection, this.field.getWidth(), this.field.getHeight());
+        return FieldHelper.isHorizontalDirectionCorrect(this.horizontalDirection, this.field.getWidth(), newX)
+            && FieldHelper.isVerticalDirectionCorrect(this.verticalDirection, this.field.getHeight(), newY);
     }
 }
