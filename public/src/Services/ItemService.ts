@@ -61,9 +61,10 @@ export class ItemService
             return;
         }
         let food = this.field.getItem(bacteria.getCoordinates());
-        /*if (food !== null && food.getType() === ItemType.FOOD) {
-            bacteria.eat(food);
-            this.field.removeItem(food);
-        }*/
+        if (food !== null) {
+            if (bacteria.eat(food)) {
+                this.field.removeItem(food);
+            }
+        }
     }
 }

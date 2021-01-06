@@ -1,7 +1,4 @@
 import {IDrawableItem} from "./IDrawableItem";
-import {IFood} from "./IFood";
-import {HorizontalDirection} from "../Types/HorizontalDirection";
-import {VerticalDirection} from "../Types/VerticalDirection";
 
 export interface IBacteria extends IDrawableItem
 {
@@ -11,5 +8,5 @@ export interface IBacteria extends IDrawableItem
     canLive(): boolean;
     reproduce(): IBacteria;
     move(): void;
-    eat(food: IFood): void;
+    eat(food: IDrawableItem): boolean;
 }

@@ -6,6 +6,8 @@ import {HorizontalDirection} from "../Types/HorizontalDirection";
 import {VerticalDirection} from "../Types/VerticalDirection";
 import {IField} from "../Field/IField";
 import {FieldHelper} from "../Helpers/FieldHelper";
+import {IDrawableItem} from "./IDrawableItem";
+import {Food} from "./Food";
 
 export class Bacteria extends DrawableItem implements IBacteria
 {
@@ -39,8 +41,12 @@ export class Bacteria extends DrawableItem implements IBacteria
         return true;
     }
 
-    eat(food: IFood): void {
-        this.energy += food.getEnergy();
+    eat(item: IDrawableItem): boolean {
+        if (!(item instanceof Food)) {
+            return false;
+        }
+        this.energy += item.getEnergy();
+        return true;
     }
 
     move(): void {

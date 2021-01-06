@@ -8,11 +8,11 @@ import {Config} from "./src/Config";
 let config = new Config({
     width: 30,
     height: 15,
-    foodCount: 0,
-    edibleBacteriaCount: 20,
+    foodCount: 30,
+    edibleBacteriaCount: 7,
     predatoryBacteriaCount: 0,
     speed: 10,
-    duration: 120
+    duration: 30
 });
 
 let drawer = new ConsoleDrawer();

@@ -39,7 +39,7 @@ export class Field implements IField
         let items = [];
         for (let coordinates in this.items) {
             let item = this.items[coordinates];
-            if (type === null || type === item.getType()) {
+            if (item !== undefined && (type === null || type === item.getType())) {
                 items.push(item);
             }
         }
