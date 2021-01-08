@@ -4,15 +4,29 @@ import {ConsoleDrawer} from "./src/Drawer/ConsoleDrawer";
 import {ConsoleField} from "./src/Field/ConsoleField";
 import {Engine} from "./src/Engine";
 import {Config} from "./src/Config";
+import {ItemType} from "./src/Types/ItemType";
 
 let config = new Config({
-    width: 30,
-    height: 15,
-    foodCount: 50,
-    foodReproductionSpeed: 0.1,
-    edibleBacteriaCount: 20,
-    predatoryBacteriaCount: 5,
-    speed: 10,
+    width: 50,
+    height: 25,
+    foods: [
+        {
+            type: ItemType.FOOD,
+            count: 50,
+            reproductionSpeed: 0.5
+        }
+    ],
+    bacterias: [
+        {
+            type: ItemType.EDIBLE_BACTERIA,
+            count: 20
+        },
+        {
+            type: ItemType.PREDATORY_BACTERIA,
+            count: 5
+        }
+    ],
+    speed: 5,
     duration: 60
 });
 

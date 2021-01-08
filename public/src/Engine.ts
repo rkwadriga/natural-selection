@@ -1,7 +1,6 @@
 import {IDrawer} from "./Drawer/IDrawer";
 import {IField} from "./Field/IField";
 import {ItemService} from "./Services/ItemService";
-import {ItemType} from "./Types/ItemType";
 import {Config} from "./Config";
 import {IBacteria} from "./Item/IBacteria";
 
@@ -24,9 +23,12 @@ export class Engine
         this.config = config;
 
         // Create food and bacterias and add them to the field
-        this.itemService.generateItemsAndAddThemToField(ItemType.FOOD, config.foodCount);
-        this.itemService.generateItemsAndAddThemToField(ItemType.EDIBLE_BACTERIA, config.edibleBacteriaCount);
-        this.itemService.generateItemsAndAddThemToField(ItemType.PREDATORY_BACTERIA, config.predatoryBacteriaCount);
+        config.foods.forEach(params => {
+            this.itemService.generateItemsAndAddThemToField(params);
+        });
+        config.bacterias.forEach(params => {
+            this.itemService.generateItemsAndAddThemToField(params);
+        });
 
         // Draw the start position of field
         this.drawer.draw(this.field);
@@ -53,23 +55,21 @@ export class Engine
     }
 
     private iterate() {
-        //console.log(this.field.getItems(ItemType.EDIBLE_BACTERIA));
-        // Move edible bacterias
-        this.moveBacterias(ItemType.EDIBLE_BACTERIA);
-        // Move predatory bacterias
-        this.moveBacterias(ItemType.PREDATORY_BACTERIA);
-        // Reproduce food
-        this.itemService.generateItemsAndAddThemToField(ItemType.FOOD, this.config.foodReproductionSpeed);
-    }
+        // Move edible and predatory bacterias
+        this.config.bacterias.forEach(params => {
+            this.field.getItems(params['type']).forEach((bacteria: IBacteria) => {
+                this.itemService.moveBacteria(bacteria);
+                if (!bacteria.canLive()) {
+                    this.field.removeItem(bacteria);
+                    return;
+                }
+                this.itemService.feedBacteria(bacteria);
+            });
+        });
 
-    private moveBacterias(type: ItemType) {
-        this.field.getItems(type).forEach((bacteria: IBacteria) => {
-            this.itemService.moveBacteria(bacteria);
-            if (!bacteria.canLive()) {
-                this.field.removeItem(bacteria);
-                return;
-            }
-            this.itemService.feedBacteria(bacteria);
+        // Reproduce foods
+        this.config.foods.forEach(params => {
+            this.itemService.generateItemsAndAddThemToField({type: params['type'], count: params['reproductionSpeed']});
         });
     }
 }

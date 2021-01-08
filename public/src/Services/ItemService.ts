@@ -6,6 +6,7 @@ import {ItemType} from "../Types/ItemType";
 import {IField} from "../Field/IField";
 import {IDrawableItem} from "../Item/IDrawableItem";
 import {IBacteria} from "../Item/IBacteria";
+import {ArrayHelper} from "../Helpers/ArrayHelper";
 
 export class ItemService
 {
@@ -36,8 +37,10 @@ export class ItemService
         }
     }
 
-    generateItemsAndAddThemToField(type: ItemType, count: number): void
+    generateItemsAndAddThemToField(params: object): void
     {
+        let type = params['type'];
+        let count = params['count'];
         if (count < 1) {
             if (this.itemsTmpCount[type] === undefined) {
                 this.itemsTmpCount[type] = 0;
@@ -55,12 +58,11 @@ export class ItemService
             let item: IDrawableItem;
             let hasItem = true;
             while (hasItem) {
-                item = this.getFactory(type).createDrawableItem({
+                item = this.getFactory(type).createDrawableItem(ArrayHelper.merge({
                     field: this.field,
-                    type: type,
                     x1: this.field.getWidth(),
                     y1: this.field.getHeight()
-                });
+                }, params));
                 hasItem = this.field.getItem(item.getCoordinates()) !== null;
             }
             this.field.addItem(item);
