@@ -13,6 +13,7 @@ export class ItemService
     private readonly foodFactory: FoodFactory;
     private readonly edibleBacteriaFactory: EdibleBacteriaFactory;
     private readonly predatoryBacteriaFactory: PredatoryBacteriaFactory;
+    private readonly itemsTmpCount: Array<number>;
 
     constructor(field: IField)
     {
@@ -20,6 +21,7 @@ export class ItemService
         this.foodFactory = new FoodFactory(field);
         this.edibleBacteriaFactory = new EdibleBacteriaFactory(field);
         this.predatoryBacteriaFactory = new PredatoryBacteriaFactory(field);
+        this.itemsTmpCount = [];
     }
 
     getFactory(type: ItemType): IDrawableItemFactory
@@ -36,6 +38,19 @@ export class ItemService
 
     generateItemsAndAddThemToField(type: ItemType, count: number): void
     {
+        if (count < 1) {
+            if (this.itemsTmpCount[type] === undefined) {
+                this.itemsTmpCount[type] = 0;
+            }
+            if (this.itemsTmpCount[type] + count >= 1) {
+                count = 1;
+                this.itemsTmpCount[type] = 0;
+            } else {
+                this.itemsTmpCount[type] += count;
+                return;
+            }
+        }
+
         for (let i = 0; i < count; i++) {
             let item: IDrawableItem;
             let hasItem = true;
@@ -52,19 +67,23 @@ export class ItemService
         if (!bactria.canMove()) {
             return;
         }
+
+        // Remember bacteria old coordinates
+        let oldCoordinates = bactria.getCoordinates();
+        // Move bactria
         bactria.move();
+        // If bacteria moved - remove it from the old place and add to the new one
+        if (oldCoordinates !== bactria.getCoordinates()) {
+            this.field.moveItem(oldCoordinates, bactria.getCoordinates());
+        }
     }
 
     feedBacteria(bacteria: IBacteria): void
     {
-        if (!bacteria.canEat()) {
-            return;
-        }
-        let food = this.field.getItem(bacteria.getCoordinates());
-        if (food !== null) {
-            if (bacteria.eat(food)) {
-                this.field.removeItem(food);
-            }
+        let item = this.field.getItem(bacteria.getCoordinates());
+        if (item !== null && bacteria.canEat(item)) {
+            bacteria.eat(item);
+            this.field.removeItem(item);
         }
     }
 }

@@ -1,6 +1,5 @@
 import {IField} from "./IField";
 import {IDrawableItem} from "../Item/IDrawableItem";
-import {ItemType} from "../Types/ItemType";
 
 export class Field implements IField
 {
@@ -33,6 +32,12 @@ export class Field implements IField
 
     removeItem(item: IDrawableItem): void {
         this.items[item.getCoordinates()] = undefined;
+    }
+
+    moveItem(oldCoordinates: string, newCoordinates: string): void {
+        let item = this.items[oldCoordinates];
+        this.items[oldCoordinates] = undefined;
+        this.items[newCoordinates] = item;
     }
 
     getItems(type = null): Array<IDrawableItem> {

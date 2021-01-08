@@ -10,6 +10,7 @@ export class Engine
     private readonly drawer: IDrawer;
     private readonly field: IField;
     private readonly itemService: ItemService;
+    private config: Config;
 
     constructor(drawer: IDrawer, field: IField)
     {
@@ -20,10 +21,14 @@ export class Engine
 
     run(config: Config): number
     {
+        this.config = config;
+
         // Create food and bacterias and add them to the field
         this.itemService.generateItemsAndAddThemToField(ItemType.FOOD, config.foodCount);
         this.itemService.generateItemsAndAddThemToField(ItemType.EDIBLE_BACTERIA, config.edibleBacteriaCount);
         this.itemService.generateItemsAndAddThemToField(ItemType.PREDATORY_BACTERIA, config.predatoryBacteriaCount);
+
+        this.moveBacterias(ItemType.PREDATORY_BACTERIA);
 
         // Draw the start position of field
         this.drawer.draw(this.field);
@@ -31,9 +36,6 @@ export class Engine
         // Run the game!
         let time = 0;
         let period = 1000 / config.speed;
-
-
-        //console.log(this.field.getItems(ItemType.EDIBLE_BACTERIA)[0].getCoordinates());
 
         let interval = setInterval(() => {
             // Clear console
@@ -55,7 +57,15 @@ export class Engine
     private iterate() {
         //console.log(this.field.getItems(ItemType.EDIBLE_BACTERIA));
         // Move edible bacterias
-        this.field.getItems(ItemType.EDIBLE_BACTERIA).forEach((bacteria: IBacteria) => {
+        this.moveBacterias(ItemType.EDIBLE_BACTERIA);
+        // Move predatory bacterias
+        this.moveBacterias(ItemType.PREDATORY_BACTERIA);
+        // Reproduce food
+        this.itemService.generateItemsAndAddThemToField(ItemType.FOOD, this.config.foodReproductionSpeed);
+    }
+
+    private moveBacterias(type: ItemType) {
+        this.field.getItems(type).forEach((bacteria: IBacteria) => {
             this.itemService.moveBacteria(bacteria);
             if (!bacteria.canLive()) {
                 this.field.removeItem(bacteria);

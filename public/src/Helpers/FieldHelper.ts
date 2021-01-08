@@ -31,27 +31,9 @@ export class FieldHelper
         return [x, y];
     }
 
-    public static getRandomStep(x0: number, y0: number, w: number, h: number, stepSize: number = 1): Array<number>
+    public static getRandomStep(stepSize: number): Array<number>
     {
-        let x: number, y: number;
-        let inHorizontal = y0 < 0 || y0 >= h - 1;
-        let inVertical = x0 < 0 || x0 >= w - 1;
-
-        if (inHorizontal && inVertical) {
-            x = stepSize;
-            y = stepSize;
-        } else if (inHorizontal) {
-            x = 0;
-            y = stepSize;
-        } else if (inVertical) {
-            x = stepSize;
-            y = 0;
-        } else {
-            x = MathHelper.randomInt(0, stepSize);
-            y = MathHelper.randomInt(0, stepSize);
-        }
-
-        return [x, y];
+        return [MathHelper.randomInt(0, stepSize), MathHelper.randomInt(0, stepSize)];
     }
 
     public static getRandomPosition(w: number, h: number): Array<number>
