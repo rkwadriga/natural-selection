@@ -9,5 +9,5 @@ export interface IField
     getItem(coordinates: string): IDrawableItem;
     addItem(item: IDrawableItem): void;
     removeItem(item: IDrawableItem): void;
-    moveItem(oldCoordinates: string, newCoordinates: string): void;
+    moveItem(from: string, to: string): void;
 }

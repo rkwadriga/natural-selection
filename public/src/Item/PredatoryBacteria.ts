@@ -10,4 +10,8 @@ export class PredatoryBacteria extends Bacteria
     canEat(item: IDrawableItem): boolean {
         return item.getType() === ItemType.EDIBLE_BACTERIA;
     }
+
+    createClone(): PredatoryBacteria {
+        return new PredatoryBacteria(this.getCloneParams());
+    }
 }

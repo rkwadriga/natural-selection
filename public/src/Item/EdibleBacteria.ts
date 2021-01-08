@@ -15,4 +15,8 @@ export class EdibleBacteria extends Bacteria implements IFood
     canEat(item: IDrawableItem): boolean {
         return item.getType() === ItemType.FOOD;
     }
+
+    createClone(): EdibleBacteria {
+        return new EdibleBacteria(this.getCloneParams());
+    }
 }

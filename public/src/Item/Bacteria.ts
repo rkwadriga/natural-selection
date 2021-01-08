@@ -9,28 +9,39 @@ import {IFood} from "./IFood";
 
 export abstract class Bacteria extends DrawableItem implements IBacteria, IFood
 {
-    protected energy = 1;
+    protected energy = 10;
     protected readonly speed = 1;
     protected verticalDirection = VerticalDirection.DOWN;
     protected horizontalDirection = HorizontalDirection.RIGHT;
-    protected readonly movementCost = 0.5;
+    protected readonly movementCost = 0.1;
+    protected readonly reproduceCost = 2;
+    protected readonly reproduceMinEnergy: number;
+
+    constructor(params: object) {
+        super(params);
+        if (this.reproduceMinEnergy === undefined) {
+            this.reproduceMinEnergy = this.energy * 2;
+        }
+    }
 
     abstract canEat(item: IDrawableItem): boolean;
+
+    abstract createClone(): Bacteria;
 
     getEnergy(): number {
         return this.energy;
     }
 
     canLive(): boolean {
-        return this.energy > 0;
+        return this.energy > this.movementCost;
     }
 
     canMove(): boolean {
-        return this.energy > 0;
+        return this.energy >= this.speed * this.movementCost;
     }
 
     canReproduce(): boolean {
-        return true;
+        return this.energy >= this.reproduceMinEnergy;
     }
 
     eat(item: IDrawableItem): void {
@@ -50,6 +61,7 @@ export abstract class Bacteria extends DrawableItem implements IBacteria, IFood
             [newX, newY] = FieldHelper.move(this.x, this.y, deltaX, deltaY, this.horizontalDirection, this.verticalDirection);
             if (this.canGo(newX, newY)) {
                 [this.x, this.y] = [newX, newY];
+                this.energy -= this.speed * this.movementCost * Math.sqrt(Math.pow(deltaX, 2) + Math.pow(deltaY, 2));
                 return;
             }
 
@@ -61,10 +73,17 @@ export abstract class Bacteria extends DrawableItem implements IBacteria, IFood
                 this.verticalDirection = newVerticalDirection;
             }
         }
+        this.energy -= this.movementCost;
     }
 
     reproduce(): IBacteria {
-        return null;
+        let clone = this.createClone();
+        clone.move();
+        if (clone.getCoordinates() === this.getCoordinates()) {
+            return null;
+        }
+        this.energy -= clone.energy;
+        return clone;
     }
 
     protected canGo(newX: number, newY: number): boolean
@@ -73,5 +92,15 @@ export abstract class Bacteria extends DrawableItem implements IBacteria, IFood
         return (item === null || this.canEat(item))
             && FieldHelper.isHorizontalDirectionCorrect(this.horizontalDirection, this.field.getWidth(), newX)
             && FieldHelper.isVerticalDirectionCorrect(this.verticalDirection, this.field.getHeight(), newY);
+    }
+
+    protected getCloneParams(): object {
+        return {
+            type: this.type,
+            field: this.field,
+            energy: (this.energy - this.reproduceCost) / 2,
+            x: this.x,
+            y: this.y
+        };
     }
 }

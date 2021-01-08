@@ -44,6 +44,7 @@ export class Engine
             // Make all creatures to move
             this.iterate();
             this.drawer.draw(this.field);
+            this.drawer.viewStatistics(this.field, this.config.bacterias);
 
             // Stop the process when the time is run out
             if ((time += period) >=config.duration * 1000) {
@@ -59,11 +60,7 @@ export class Engine
         this.config.bacterias.forEach(params => {
             this.field.getItems(params['type']).forEach((bacteria: IBacteria) => {
                 this.itemService.moveBacteria(bacteria);
-                if (!bacteria.canLive()) {
-                    this.field.removeItem(bacteria);
-                    return;
-                }
-                this.itemService.feedBacteria(bacteria);
+                this.itemService.reproduceBacteria(bacteria);
             });
         });
 

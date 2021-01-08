@@ -15,6 +15,7 @@ export class ItemService
     private readonly edibleBacteriaFactory: EdibleBacteriaFactory;
     private readonly predatoryBacteriaFactory: PredatoryBacteriaFactory;
     private readonly itemsTmpCount: Array<number>;
+    private fieldSquare: number;
 
     constructor(field: IField)
     {
@@ -23,6 +24,7 @@ export class ItemService
         this.edibleBacteriaFactory = new EdibleBacteriaFactory();
         this.predatoryBacteriaFactory = new PredatoryBacteriaFactory();
         this.itemsTmpCount = [];
+        this.fieldSquare = field.getWidth() * field.getHeight();
     }
 
     getFactory(type: ItemType): IDrawableItemFactory
@@ -39,6 +41,10 @@ export class ItemService
 
     generateItemsAndAddThemToField(params: object): void
     {
+        // Calculate foods count
+        if (params['count'] === undefined) {
+            params['count'] = this.field.getWidth() * this.field.getHeight() * params['density'];
+        }
         let type = params['type'];
         let count = params['count'];
         if (count < 1) {
@@ -54,6 +60,10 @@ export class ItemService
             }
         }
 
+        if (count > this.fieldSquare) {
+            return;
+        }
+
         for (let i = 0; i < count; i++) {
             let item: IDrawableItem;
             let hasItem = true;
@@ -66,31 +76,54 @@ export class ItemService
                 hasItem = this.field.getItem(item.getCoordinates()) !== null;
             }
             this.field.addItem(item);
+            this.fieldSquare--;
         }
     }
 
-    moveBacteria(bactria: IBacteria): void
-    {
-        if (!bactria.canMove()) {
+    moveBacteria(bacteria: IBacteria): void {
+        if (!bacteria.canLive()) {
+            this.field.removeItem(bacteria);
+            this.fieldSquare++;
+            return;
+        }
+        if (!bacteria.canMove()) {
             return;
         }
 
         // Remember bacteria old coordinates
-        let oldCoordinates = bactria.getCoordinates();
+        let oldCoordinates = bacteria.getCoordinates();
+
         // Move bactria
-        bactria.move();
+        bacteria.move();
+
+        // Check if there is something edible in the bacteria's place after step. And make bacteria to eat it
+        this.feedBacteria(bacteria);
+
         // If bacteria moved - remove it from the old place and add to the new one
-        if (oldCoordinates !== bactria.getCoordinates()) {
-            this.field.moveItem(oldCoordinates, bactria.getCoordinates());
+        if (oldCoordinates !== bacteria.getCoordinates()) {
+            this.field.moveItem(oldCoordinates, bacteria.getCoordinates());
         }
     }
 
-    feedBacteria(bacteria: IBacteria): void
-    {
+    feedBacteria(bacteria: IBacteria): void {
         let item = this.field.getItem(bacteria.getCoordinates());
         if (item !== null && bacteria.canEat(item)) {
             bacteria.eat(item);
             this.field.removeItem(item);
+            this.fieldSquare++;
+        }
+    }
+
+    reproduceBacteria(bacteria: IBacteria): void {
+        if (!bacteria.canReproduce()) {
+            return;
+        }
+        let newBacteria = bacteria.reproduce();
+        if (newBacteria !== null) {
+            // Check if there is something edible in the new bacteria's current place. And make bacteria to eat it
+            this.feedBacteria(bacteria);
+            this.field.addItem(newBacteria);
+            this.fieldSquare--;
         }
     }
 }

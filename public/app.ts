@@ -7,27 +7,27 @@ import {Config} from "./src/Config";
 import {ItemType} from "./src/Types/ItemType";
 
 let config = new Config({
-    width: 50,
-    height: 25,
+    width: 30,
+    height: 15,
     foods: [
         {
             type: ItemType.FOOD,
-            count: 50,
-            reproductionSpeed: 0.5
+            density: 0.2,
+            reproductionSpeed: 1
         }
     ],
     bacterias: [
         {
             type: ItemType.EDIBLE_BACTERIA,
-            count: 20
+            count: 10
         },
         {
             type: ItemType.PREDATORY_BACTERIA,
-            count: 5
+            count: 3
         }
     ],
     speed: 5,
-    duration: 60
+    duration: 600
 });
 
 let drawer = new ConsoleDrawer();

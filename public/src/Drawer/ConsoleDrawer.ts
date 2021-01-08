@@ -42,4 +42,8 @@ export class ConsoleDrawer extends Drawer
 
         ctx.cursor.restore();
     }
+
+    viewStatistics(field: IField, items: Array<object>): void {
+
+    }
 }

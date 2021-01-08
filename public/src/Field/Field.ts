@@ -34,10 +34,10 @@ export class Field implements IField
         this.items[item.getCoordinates()] = undefined;
     }
 
-    moveItem(oldCoordinates: string, newCoordinates: string): void {
-        let item = this.items[oldCoordinates];
-        this.items[oldCoordinates] = undefined;
-        this.items[newCoordinates] = item;
+    moveItem(from: string, to: string): void {
+        let item = this.items[from];
+        this.items[from] = undefined;
+        this.items[to] = item;
     }
 
     getItems(type = null): Array<IDrawableItem> {
