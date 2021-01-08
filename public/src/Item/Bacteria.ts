@@ -1,30 +1,19 @@
 import {DrawableItem} from "./DrawableItem";
 import {IBacteria} from "./IBacteria";
-import {ItemType} from "../Types/ItemType";
 import {HorizontalDirection} from "../Types/HorizontalDirection";
 import {VerticalDirection} from "../Types/VerticalDirection";
-import {IField} from "../Field/IField";
 import {FieldHelper} from "../Helpers/FieldHelper";
 import {IDrawableItem} from "./IDrawableItem";
 import {Food} from "./Food";
 import {IFood} from "./IFood";
-import {MathHelper} from "../Helpers/MathHelper";
 
 export abstract class Bacteria extends DrawableItem implements IBacteria, IFood
 {
-    protected energy: number;
-    protected readonly speed: number;
-    protected verticalDirection: VerticalDirection;
-    protected horizontalDirection: HorizontalDirection;
-
-    protected constructor(field: IField, x: number, y: number, color = [255, 0, 0], image = "\u2B24", energy = 10, speed = 1, type?: ItemType)
-    {
-        super(field, x, y, color, image, type);
-        this.energy = energy;
-        this.speed = speed;
-        this.verticalDirection = VerticalDirection.TOP;
-        this.horizontalDirection = HorizontalDirection.RIGHT;
-    }
+    protected energy = 1;
+    protected readonly speed = 1;
+    protected verticalDirection = VerticalDirection.DOWN;
+    protected horizontalDirection = HorizontalDirection.RIGHT;
+    protected readonly movementCost = 0.5;
 
     abstract canEat(item: IDrawableItem): boolean;
 

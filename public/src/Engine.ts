@@ -28,8 +28,6 @@ export class Engine
         this.itemService.generateItemsAndAddThemToField(ItemType.EDIBLE_BACTERIA, config.edibleBacteriaCount);
         this.itemService.generateItemsAndAddThemToField(ItemType.PREDATORY_BACTERIA, config.predatoryBacteriaCount);
 
-        this.moveBacterias(ItemType.PREDATORY_BACTERIA);
-
         // Draw the start position of field
         this.drawer.draw(this.field);
 

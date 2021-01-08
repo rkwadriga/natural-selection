@@ -2,23 +2,22 @@ import {IDrawableItem} from "./IDrawableItem";
 import {ItemType} from "../Types/ItemType";
 import {IField} from "../Field/IField";
 
-export class DrawableItem implements IDrawableItem
+export abstract class DrawableItem implements IDrawableItem
 {
-    protected readonly field: IField;
-    protected readonly type: ItemType;
-    protected x: number;
-    protected y: number;
-    protected readonly color: Array<number>;
-    protected readonly image: string;
+    protected readonly field?: IField = null;
+    protected readonly type?: ItemType = null;
+    protected x = 0;
+    protected y = 0;
+    protected readonly color = [0, 0, 0];
+    protected readonly image?: string = null;
 
-    constructor(field: IField, x: number, y: number, color = [255, 255, 255], image = "\u2B24", type?: ItemType)
+    constructor(params: object)
     {
-        this.field = field;
-        this.type = type;
-        this.x = x;
-        this.y = y;
-        this.color = color;
-        this.image = image;
+        for (let param in params) {
+            if (this[param] !== undefined) {
+                this[param] = params[param];
+            }
+        }
     }
 
     getType(): ItemType {

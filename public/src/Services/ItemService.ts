@@ -18,9 +18,9 @@ export class ItemService
     constructor(field: IField)
     {
         this.field = field;
-        this.foodFactory = new FoodFactory(field);
-        this.edibleBacteriaFactory = new EdibleBacteriaFactory(field);
-        this.predatoryBacteriaFactory = new PredatoryBacteriaFactory(field);
+        this.foodFactory = new FoodFactory();
+        this.edibleBacteriaFactory = new EdibleBacteriaFactory();
+        this.predatoryBacteriaFactory = new PredatoryBacteriaFactory();
         this.itemsTmpCount = [];
     }
 
@@ -55,7 +55,12 @@ export class ItemService
             let item: IDrawableItem;
             let hasItem = true;
             while (hasItem) {
-                item = this.getFactory(type).createDrawableItem(this.field.getWidth(), this.field.getHeight());
+                item = this.getFactory(type).createDrawableItem({
+                    field: this.field,
+                    type: type,
+                    x1: this.field.getWidth(),
+                    y1: this.field.getHeight()
+                });
                 hasItem = this.field.getItem(item.getCoordinates()) !== null;
             }
             this.field.addItem(item);
