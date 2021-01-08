@@ -13,7 +13,7 @@ export abstract class Bacteria extends DrawableItem implements IBacteria, IFood
     protected readonly speed = 1;
     protected verticalDirection = VerticalDirection.DOWN;
     protected horizontalDirection = HorizontalDirection.RIGHT;
-    protected readonly movementCost = 0.1;
+    protected readonly movementCost = 0.05;
     protected readonly reproduceCost = 2;
     protected readonly reproduceMinEnergy: number;
 
