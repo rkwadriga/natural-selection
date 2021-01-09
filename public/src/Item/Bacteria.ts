@@ -10,12 +10,12 @@ import {IFood} from "./IFood";
 export abstract class Bacteria extends DrawableItem implements IBacteria, IFood
 {
     protected energy = 10;
-    protected readonly speed = 1;
+    protected speed = 1;
     protected verticalDirection = VerticalDirection.DOWN;
     protected horizontalDirection = HorizontalDirection.RIGHT;
-    protected readonly movementCost = 0.05;
-    protected readonly reproduceCost = 2;
-    protected readonly reproduceMinEnergy: number;
+    protected movementCost = 0.05;
+    protected reproduceCost = 2;
+    protected reproduceMinEnergy: number;
 
     constructor(params: object) {
         super(params);

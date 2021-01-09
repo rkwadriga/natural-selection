@@ -4,8 +4,10 @@ import {IDrawableItem} from "./IDrawableItem";
 
 export class PredatoryBacteria extends Bacteria
 {
-    protected readonly color = [255, 0, 0];
-    protected readonly image = "\u2B24";
+    protected color = [255, 0, 0];
+    protected image = "\u2B24";
+    protected name = "Predatory bacteria";
+    protected movementCost = 0.1;
 
     canEat(item: IDrawableItem): boolean {
         return item.getType() === ItemType.EDIBLE_BACTERIA;

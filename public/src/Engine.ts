@@ -3,6 +3,7 @@ import {IField} from "./Field/IField";
 import {ItemService} from "./Services/ItemService";
 import {Config} from "./Config";
 import {IBacteria} from "./Item/IBacteria";
+import {ArrayHelper} from "./Helpers/ArrayHelper";
 
 export class Engine
 {
@@ -30,8 +31,14 @@ export class Engine
             this.itemService.generateItemsAndAddThemToField(params);
         });
 
+        // Prepare statistics items
+        let statisticsItems = this.config.foods;
+        this.config.bacterias.forEach(params => {
+            statisticsItems.push(params);
+        });
+
         // Draw the start position of field
-        this.drawer.draw(this.field);
+        this.drawer.viewField(this.field);
 
         // Run the game!
         let time = 0;
@@ -43,8 +50,9 @@ export class Engine
 
             // Make all creatures to move
             this.iterate();
-            this.drawer.draw(this.field);
-            this.drawer.viewStatistics(this.field, this.config.bacterias);
+            this.drawer.viewField(this.field);
+            this.drawer.viewStatistics(this.field, statisticsItems);
+            this.drawer.draw();
 
             // Stop the process when the time is run out
             if ((time += period) >=config.duration * 1000) {

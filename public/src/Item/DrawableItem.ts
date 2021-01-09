@@ -5,11 +5,12 @@ import {IField} from "../Field/IField";
 export abstract class DrawableItem implements IDrawableItem
 {
     protected readonly field?: IField = null;
-    protected readonly type?: ItemType = null;
+    protected type?: ItemType = null;
     protected x = 0;
     protected y = 0;
-    protected readonly color = [0, 0, 0];
-    protected readonly image?: string = null;
+    protected color = [0, 0, 0];
+    protected image?: string = null;
+    protected name: string;
 
     constructor(params: object)
     {
@@ -44,7 +45,9 @@ export abstract class DrawableItem implements IDrawableItem
         return this.image;
     }
 
-
+    toString(): string {
+        return this.name;
+    }
 
     protected static createCoordinates(x: number, y: number): string
     {

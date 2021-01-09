@@ -3,9 +3,10 @@ import {IFood} from "./IFood";
 
 export class Food extends DrawableItem implements IFood
 {
-    protected readonly energy = 2;
-    protected readonly color = [0, 200, 0];
-    protected readonly image = "\u25B2";
+    protected energy = 2;
+    protected color = [0, 200, 0];
+    protected image = "\u25B2";
+    protected name = "Food";
 
     getEnergy(): number {
         return this.energy;

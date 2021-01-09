@@ -5,8 +5,9 @@ import {IDrawableItem} from "./IDrawableItem";
 
 export class EdibleBacteria extends Bacteria implements IFood
 {
-    protected readonly color = [100, 100, 0];
-    protected readonly image = "\u25A0";
+    protected color = [100, 100, 0];
+    protected image = "\u25A0";
+    protected name = "Edible bacteria";
 
     getEnergy(): number {
         return this.energy;

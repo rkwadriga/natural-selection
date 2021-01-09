@@ -1,3 +1,4 @@
+// cd home-projects/natural-selection/app/public/
 // tsc app.ts && node app.js
 
 import {ConsoleDrawer} from "./src/Drawer/ConsoleDrawer";
@@ -7,7 +8,7 @@ import {Config} from "./src/Config";
 import {ItemType} from "./src/Types/ItemType";
 
 let config = new Config({
-    width: 50,
+    width: 62,
     height: 25,
     foods: [
         {

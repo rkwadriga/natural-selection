@@ -8,4 +8,5 @@ export interface IDrawableItem
     getCoordinates(): string;
     getColor(): Array<number>;
     getImage(): string;
+    toString(): string;
 }
