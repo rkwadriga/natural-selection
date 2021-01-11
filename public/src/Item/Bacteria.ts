@@ -11,6 +11,7 @@ export abstract class Bacteria extends DrawableItem implements IBacteria, IFood
     protected energy = 10;
     protected speed = 1;
     protected direction = Direction.LEFT_TOP;
+    protected eatingCost = 1;
     protected movementCost = 0.05;
     protected reproduceCost = 2;
     protected reproduceMinEnergy: number;
@@ -47,7 +48,7 @@ export abstract class Bacteria extends DrawableItem implements IBacteria, IFood
             return;
         }
         if (item instanceof Food || item instanceof Bacteria) {
-            this.energy += item.getEnergy();
+            this.energy += item.getEnergy() * this.eatingCost;
         }
     }
 
