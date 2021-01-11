@@ -23,9 +23,7 @@ var PredatoryBacteria = /** @class */ (function (_super) {
         _this.color = [255, 0, 0];
         _this.image = "\u2B24";
         _this.name = "Predatory bacteria";
-        _this.energy = 10;
-        _this.movementCost = 0.05;
-        _this.eatingCost = 0.8;
+        _this.eatingCost = 0.6;
         return _this;
     }
     PredatoryBacteria.prototype.canEat = function (item) {

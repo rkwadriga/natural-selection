@@ -8,7 +8,7 @@ export class EdibleBacteria extends Bacteria implements IFood
     protected color = [100, 100, 0];
     protected image = "\u25FC";
     protected name = "Edible bacteria";
-    protected movementCost = 0.05;
+    protected reproduceCost = 1;
 
     getEnergy(): number {
         return this.energy;

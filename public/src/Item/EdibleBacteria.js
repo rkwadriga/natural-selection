@@ -23,7 +23,7 @@ var EdibleBacteria = /** @class */ (function (_super) {
         _this.color = [100, 100, 0];
         _this.image = "\u25FC";
         _this.name = "Edible bacteria";
-        _this.movementCost = 0.05;
+        _this.reproduceCost = 1;
         return _this;
     }
     EdibleBacteria.prototype.getEnergy = function () {

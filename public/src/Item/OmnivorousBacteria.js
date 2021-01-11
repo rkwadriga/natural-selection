@@ -23,9 +23,7 @@ var OmnivorousBacteria = /** @class */ (function (_super) {
         _this.color = [0, 255, 255];
         _this.image = "\u25C8";
         _this.name = "Omnivorous bacteria";
-        _this.energy = 10;
-        _this.movementCost = 0.05;
-        _this.eatingCost = 0.6;
+        _this.eatingCost = 0.5;
         return _this;
     }
     OmnivorousBacteria.prototype.canEat = function (item) {
