@@ -13,6 +13,10 @@ export class EdibleBacteria extends Bacteria implements IFood
         return this.energy;
     }
 
+    protected isAfraid(item: IDrawableItem): boolean {
+        return item.getType() !== ItemType.FOOD && item.getType() !== this.type;
+    }
+
     canEat(item: IDrawableItem): boolean {
         return item.getType() === ItemType.FOOD;
     }

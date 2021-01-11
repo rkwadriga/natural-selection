@@ -8,8 +8,8 @@ import {Config} from "./src/Config";
 import {ItemType} from "./src/Types/ItemType";
 
 let config = new Config({
-    width: 62,
-    height: 25,
+    width: 70,
+    height: 35,
     foods: [
         {
             type: ItemType.FOOD,
@@ -20,7 +20,7 @@ let config = new Config({
     bacterias: [
         {
             type: ItemType.EDIBLE_BACTERIA,
-            count: 15
+            count: 10
         },
         {
             type: ItemType.PREDATORY_BACTERIA,

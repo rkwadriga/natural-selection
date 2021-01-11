@@ -1,6 +1,5 @@
 import {MathHelper} from "./MathHelper";
-import {VerticalDirection} from "../Types/VerticalDirection";
-import {HorizontalDirection} from "../Types/HorizontalDirection";
+import {Direction} from "../Types/Direction";
 
 export class FieldHelper
 {
@@ -41,29 +40,86 @@ export class FieldHelper
         return [MathHelper.randomInt(0, w), MathHelper.randomInt(0, h)];
     }
 
-    public static move(x: number, y: number, deltaX: number, deltaY: number, horizontalDirection: HorizontalDirection, verticalDirection: VerticalDirection): Array<number>
+    public static makeAStep(x: number, y: number, deltaX: number, deltaY: number, direction: Direction): Array<number>
     {
-        return [
-            horizontalDirection === HorizontalDirection.RIGHT ? x + deltaX : x - deltaX,
-            verticalDirection === VerticalDirection.DOWN ? y + deltaY : y - deltaY
-        ];
+        if (deltaX === 0 && deltaY === 0) {
+            return [x, y];
+        }
+        let newX = x; let newY = y;
+        switch (direction) {
+            case Direction.LEFT_TOP:
+                newX = x - deltaX;
+                newY = y - deltaY;
+                break;
+            case Direction.TOP:
+                newY = y - deltaY;
+                break;
+            case Direction.RIGHT_TOP:
+                newX = x + deltaX;
+                newY = y - deltaY;
+                break;
+            case Direction.RIGHT:
+                newX = x + deltaX;
+                break;
+            case Direction.RIGHT_DOWN:
+                newX = x + deltaX;
+                newY = y + deltaY;
+                break;
+            case Direction.DOWN:
+                newY = y + deltaY;
+                break;
+            case Direction.LEFT_DOWN:
+                newX = x - deltaX;
+                newY = y + deltaY;
+                break;
+            case Direction.LEFT:
+                newX = x - deltaX;
+                break;
+        }
+        return [newX, newY];
     }
 
-    public static isHorizontalDirectionCorrect(horizontalDirection: HorizontalDirection, w: number, newX: number): boolean
+    public static switchDirection(direction: Direction): Direction
     {
-        return (horizontalDirection === HorizontalDirection.RIGHT && newX < w) || (horizontalDirection === HorizontalDirection.LEFT && newX >= 0);
+        switch (direction) {
+            case Direction.LEFT_TOP:
+                return Direction.RIGHT_DOWN;
+            case Direction.TOP:
+                return Direction.DOWN;
+            case Direction.RIGHT_TOP:
+                return Direction.LEFT_DOWN;
+            case Direction.RIGHT:
+                return Direction.LEFT;
+            case Direction.RIGHT_DOWN:
+                return Direction.LEFT_TOP;
+            case Direction.DOWN:
+                return Direction.TOP;
+            case Direction.LEFT_DOWN:
+                return Direction.RIGHT_TOP;
+            case Direction.LEFT:
+                return Direction.RIGHT;
+        }
     }
 
-    public static isVerticalDirectionCorrect(verticalDirection: VerticalDirection, h: number, newY: number): boolean
+    public static rotateDirection(direction: Direction): Direction
     {
-        return (verticalDirection === VerticalDirection.DOWN && newY < h) || (verticalDirection === VerticalDirection.TOP && newY >= 0);
-    }
-
-    public static switchDirection(horizontalDirection: HorizontalDirection, verticalDirection: VerticalDirection): Array<number>
-    {
-        return [
-            horizontalDirection === HorizontalDirection.RIGHT ? HorizontalDirection.LEFT : HorizontalDirection.RIGHT,
-            verticalDirection === VerticalDirection.DOWN ? VerticalDirection.TOP : VerticalDirection.DOWN
-        ];
+        switch (direction) {
+            case Direction.LEFT_TOP:
+                return Direction.TOP;
+            case Direction.TOP:
+                return Direction.RIGHT_TOP;
+            case Direction.RIGHT_TOP:
+                return Direction.RIGHT;
+            case Direction.RIGHT:
+                return Direction.RIGHT_DOWN;
+            case Direction.RIGHT_DOWN:
+                return Direction.DOWN;
+            case Direction.DOWN:
+                return Direction.LEFT_DOWN;
+            case Direction.LEFT_DOWN:
+                return Direction.LEFT;
+            case Direction.LEFT:
+                return Direction.LEFT_TOP;
+        }
     }
 }

@@ -1,7 +1,6 @@
 import {DrawableItem} from "./DrawableItem";
 import {IBacteria} from "./IBacteria";
-import {HorizontalDirection} from "../Types/HorizontalDirection";
-import {VerticalDirection} from "../Types/VerticalDirection";
+import {Direction} from "../Types/Direction";
 import {FieldHelper} from "../Helpers/FieldHelper";
 import {IDrawableItem} from "./IDrawableItem";
 import {Food} from "./Food";
@@ -11,8 +10,7 @@ export abstract class Bacteria extends DrawableItem implements IBacteria, IFood
 {
     protected energy = 10;
     protected speed = 1;
-    protected verticalDirection = VerticalDirection.DOWN;
-    protected horizontalDirection = HorizontalDirection.RIGHT;
+    protected direction = Direction.LEFT_TOP;
     protected movementCost = 0.05;
     protected reproduceCost = 2;
     protected reproduceMinEnergy: number;
@@ -54,24 +52,29 @@ export abstract class Bacteria extends DrawableItem implements IBacteria, IFood
     }
 
     move(): void {
-        let deltaX: number, deltaY: number, newX: number, newY: number;
-        let newHorizontalDirection: HorizontalDirection, newVerticalDirection: VerticalDirection;
-        for (let i = 0; i <= 8; i++) {
-            [deltaX, deltaY] = FieldHelper.getRandomStep(this.speed);
-            [newX, newY] = FieldHelper.move(this.x, this.y, deltaX, deltaY, this.horizontalDirection, this.verticalDirection);
+        let newX: number, newY: number;
+        let direction = this.direction;
+        let nextItem: IDrawableItem;
+        [newX, newY] = this.makeAStep(direction);
+        // Check borders
+        if (!this.checkBorders(newX, newY)) {
+            direction = FieldHelper.switchDirection(direction);
+        }
+        // Check if item is afraid of next item
+        nextItem = this.field.getItem(DrawableItem.createCoordinates(newX, newY));
+        if (nextItem !== null && this.isAfraid(nextItem)) {
+            direction = FieldHelper.switchDirection(direction);
+        }
+
+        for (let i = 0; i < 8; i++) {
+            [newX, newY] = this.makeAStep(direction);
             if (this.canGo(newX, newY)) {
+                this.energy -= this.getMovementCost(newX, newY);
+                this.direction = direction;
                 [this.x, this.y] = [newX, newY];
-                this.energy -= this.speed * this.movementCost * Math.sqrt(Math.pow(deltaX, 2) + Math.pow(deltaY, 2));
                 return;
             }
-
-            [newHorizontalDirection, newVerticalDirection] = FieldHelper.switchDirection(this.horizontalDirection, this.verticalDirection);
-            if (FieldHelper.isHorizontalDirectionCorrect(newHorizontalDirection, this.field.getWidth(), newX)) {
-                this.horizontalDirection = newHorizontalDirection;
-            }
-            if (FieldHelper.isVerticalDirectionCorrect(newVerticalDirection, this.field.getHeight(), newY)) {
-                this.verticalDirection = newVerticalDirection;
-            }
+            direction = FieldHelper.rotateDirection(direction);
         }
         this.energy -= this.movementCost;
     }
@@ -86,12 +89,30 @@ export abstract class Bacteria extends DrawableItem implements IBacteria, IFood
         return clone;
     }
 
-    protected canGo(newX: number, newY: number): boolean
-    {
-        let item = this.field.getItem(DrawableItem.createCoordinates(newX, newY));
-        return (item === null || this.canEat(item))
-            && FieldHelper.isHorizontalDirectionCorrect(this.horizontalDirection, this.field.getWidth(), newX)
-            && FieldHelper.isVerticalDirectionCorrect(this.verticalDirection, this.field.getHeight(), newY);
+    protected canGo(newX: number, newY: number): boolean {
+        if (!this.checkBorders(newX, newY)) {
+            return false;
+        }
+        let nextItem = this.field.getItem(DrawableItem.createCoordinates(newX, newY));
+        return nextItem === null || this.canEat(nextItem);
+    }
+
+    protected isAfraid(item: IDrawableItem): boolean {
+        return false;
+    }
+
+    protected makeAStep(direction: Direction): Array<number> {
+        let deltaX: number, deltaY: number;
+        [deltaX, deltaY] = FieldHelper.getRandomStep(this.speed);
+        return  FieldHelper.makeAStep(this.x, this.y, deltaX, deltaY, direction);
+    }
+
+    protected checkBorders(newX: number, newY: number): boolean {
+        return newX >= 0 && newX < this.field.getWidth() && newY >= 0 && newY < this.field.getHeight();
+    }
+
+    protected getMovementCost(newX: number, newY: number): number {
+        return this.speed * this.movementCost * Math.sqrt(Math.pow(this.x - newX, 2) + Math.pow(this.y - newY, 2));
     }
 
     protected getCloneParams(): object {

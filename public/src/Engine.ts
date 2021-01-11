@@ -3,7 +3,6 @@ import {IField} from "./Field/IField";
 import {ItemService} from "./Services/ItemService";
 import {Config} from "./Config";
 import {IBacteria} from "./Item/IBacteria";
-import {ArrayHelper} from "./Helpers/ArrayHelper";
 
 export class Engine
 {
