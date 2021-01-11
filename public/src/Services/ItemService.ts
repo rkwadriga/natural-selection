@@ -7,6 +7,7 @@ import {IField} from "../Field/IField";
 import {IDrawableItem} from "../Item/IDrawableItem";
 import {IBacteria} from "../Item/IBacteria";
 import {ArrayHelper} from "../Helpers/ArrayHelper";
+import {OmnivorousBacteriaFactory} from "../Item/OmnivorousBacteriaFactory";
 
 export class ItemService
 {
@@ -14,6 +15,7 @@ export class ItemService
     private readonly foodFactory: FoodFactory;
     private readonly edibleBacteriaFactory: EdibleBacteriaFactory;
     private readonly predatoryBacteriaFactory: PredatoryBacteriaFactory;
+    private readonly omnivorousBacteriaFactory: OmnivorousBacteriaFactory;
     private readonly itemsTmpCount: Array<number>;
     private fieldSquare: number;
 
@@ -23,6 +25,7 @@ export class ItemService
         this.foodFactory = new FoodFactory();
         this.edibleBacteriaFactory = new EdibleBacteriaFactory();
         this.predatoryBacteriaFactory = new PredatoryBacteriaFactory();
+        this.omnivorousBacteriaFactory = new OmnivorousBacteriaFactory();
         this.itemsTmpCount = [];
         this.fieldSquare = field.getWidth() * field.getHeight();
     }
@@ -36,6 +39,8 @@ export class ItemService
                 return this.edibleBacteriaFactory;
             case ItemType.PREDATORY_BACTERIA:
                 return this.predatoryBacteriaFactory;
+            case ItemType.OMNIVOROUS_BACTERIA:
+                return this.omnivorousBacteriaFactory;
         }
     }
 

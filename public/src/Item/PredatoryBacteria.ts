@@ -10,7 +10,7 @@ export class PredatoryBacteria extends Bacteria
     protected movementCost = 0.1;
 
     canEat(item: IDrawableItem): boolean {
-        return item.getType() === ItemType.EDIBLE_BACTERIA;
+        return item.getType() === ItemType.EDIBLE_BACTERIA || item.getType() === ItemType.OMNIVOROUS_BACTERIA;
     }
 
     createClone(): PredatoryBacteria {
