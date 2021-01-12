@@ -86,7 +86,7 @@ export abstract class Bacteria extends DrawableItem implements IBacteria, IFood
         if (clone.getCoordinates() === this.getCoordinates()) {
             return null;
         }
-        this.energy -= clone.energy;
+        this.energy -= clone.getEnergy();
         return clone;
     }
 
