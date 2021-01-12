@@ -120,9 +120,13 @@ export abstract class Bacteria extends DrawableItem implements IBacteria, IFood
         return {
             type: this.type,
             field: this.field,
-            energy: (this.energy - this.reproduceCost) / 2,
             x: this.x,
-            y: this.y
+            y: this.y,
+            energy: (this.energy - this.reproduceCost) / 2,
+            eatingCost: this.eatingCost,
+            movementCost: this.movementCost,
+            reproduceCost: this.reproduceCost,
+            reproduceMinEnergy: this.reproduceMinEnergy
         };
     }
 }
