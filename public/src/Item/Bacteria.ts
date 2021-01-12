@@ -48,7 +48,7 @@ export abstract class Bacteria extends DrawableItem implements IBacteria, IFood
             return;
         }
         if (item instanceof Food || item instanceof Bacteria) {
-            this.energy += item.getEnergy() * this.eatingCost;
+            this.energy += item.getEnergy() * this.getEatingCost(item);
         }
     }
 
@@ -77,7 +77,7 @@ export abstract class Bacteria extends DrawableItem implements IBacteria, IFood
             }
             direction = FieldHelper.rotateDirection(direction);
         }
-        this.energy -= this.movementCost;
+        this.energy -= this.getMovementCost(this.x, this.y);
     }
 
     reproduce(): IBacteria {
@@ -113,7 +113,12 @@ export abstract class Bacteria extends DrawableItem implements IBacteria, IFood
     }
 
     protected getMovementCost(newX: number, newY: number): number {
-        return this.speed * this.movementCost * Math.sqrt(Math.pow(this.x - newX, 2) + Math.pow(this.y - newY, 2));
+        let distance = Math.sqrt(Math.pow(this.x - newX, 2) + Math.pow(this.y - newY, 2));
+        return distance > 0 ? this.speed * this.movementCost * distance : this.movementCost;
+    }
+
+    protected getEatingCost(item: IDrawableItem): number {
+        return this.eatingCost;
     }
 
     protected getCloneParams(): object {
