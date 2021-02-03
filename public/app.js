@@ -2,11 +2,11 @@
 // cd home-projects/natural-selection/app/public/
 // tsc app.ts && node app.js
 exports.__esModule = true;
-var ConsoleDrawer_1 = require("./src/Drawer/ConsoleDrawer");
-var ConsoleField_1 = require("./src/Field/ConsoleField");
-var Engine_1 = require("./src/Engine");
-var Config_1 = require("./src/Config");
-var ItemType_1 = require("./src/Types/ItemType");
+var ConsoleDrawer_1 = require("./src/Engine/Drawer/ConsoleDrawer");
+var ConsoleField_1 = require("./src/Engine/Field/ConsoleField");
+var Engine_1 = require("./src/Engine/Engine");
+var Config_1 = require("./src/Engine/Config");
+var ItemType_1 = require("./src/Engine/Types/ItemType");
 var config = new Config_1.Config({
     width: 90,
     height: 40,

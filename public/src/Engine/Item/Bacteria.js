@@ -50,7 +50,7 @@ var Bacteria = /** @class */ (function (_super) {
             return;
         }
         if (item instanceof Food_1.Food || item instanceof Bacteria) {
-            this.energy += item.getEnergy() * this.eatingCost;
+            this.energy += item.getEnergy() * this.getEatingCost(item);
         }
     };
     Bacteria.prototype.move = function () {
@@ -78,7 +78,7 @@ var Bacteria = /** @class */ (function (_super) {
             }
             direction = FieldHelper_1.FieldHelper.rotateDirection(direction);
         }
-        this.energy -= this.movementCost;
+        this.energy -= this.getMovementCost(this.x, this.y);
     };
     Bacteria.prototype.reproduce = function () {
         var clone = this.createClone();
@@ -86,7 +86,7 @@ var Bacteria = /** @class */ (function (_super) {
         if (clone.getCoordinates() === this.getCoordinates()) {
             return null;
         }
-        this.energy -= clone.energy;
+        this.energy -= clone.getEnergy();
         return clone;
     };
     Bacteria.prototype.canGo = function (newX, newY) {
@@ -109,7 +109,11 @@ var Bacteria = /** @class */ (function (_super) {
         return newX >= 0 && newX < this.field.getWidth() && newY >= 0 && newY < this.field.getHeight();
     };
     Bacteria.prototype.getMovementCost = function (newX, newY) {
-        return this.speed * this.movementCost * Math.sqrt(Math.pow(this.x - newX, 2) + Math.pow(this.y - newY, 2));
+        var distance = Math.sqrt(Math.pow(this.x - newX, 2) + Math.pow(this.y - newY, 2));
+        return distance > 0 ? this.speed * this.movementCost * distance : this.movementCost;
+    };
+    Bacteria.prototype.getEatingCost = function (item) {
+        return this.eatingCost;
     };
     Bacteria.prototype.getCloneParams = function () {
         return {
