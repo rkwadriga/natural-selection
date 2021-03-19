@@ -23,4 +23,6 @@
 ###< Frontend ###
 
 /composer.lock
-/.idea
+/.idea/
+/.docker/mysql/data/
+/.docker/web/logs/

@@ -1,0 +1,31 @@
+services:
+  db:
+    build: './.docker/mysql'
+    ports:
+      - "3333:3306"
+    volumes:
+      - ./.docker/mysql/data:/var/lib/mysql
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: natural_selection
+      MYSQL_USER: admin
+      MYSQL_PASSWORD: admin
+  web:
+    build: './.docker/web'
+    ports:
+      - "8080:80"
+    volumes:
+      - ./:/var/www/html/
+      - ./.docker/web/logs/access.log:/var/log/apache2/access.log
+      - ./.docker/web/logs/error.log:/var/log/apache2/error.log
+    depends_on:
+      - db
+  composer:
+    restart: 'no'
+    build: './.docker/composer'
+    volumes:
+      - ./:/app
+    command: install
+    depends_on:
+      - web
