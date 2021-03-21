@@ -14,17 +14,23 @@ class LoginForm extends React.Component {
 
     handleInputChange(event) {
         let newState = {};
-        if (event.target.name === 'email') {
-            newState.email = event.target.value;
-        } else {
-            newState.password = event.target.value;
-        }
+        newState[event.target.name] = event.target.value;
         this.setState(newState);
     }
 
     handleSubmit(event) {
-        console.log(this.state);
         event.preventDefault();
+
+        fetch('http://localhost:8080/token', {
+            "method": "PUT",
+            "body": JSON.stringify(this.state)
+        })
+        .then(resp => {
+            console.log(resp);
+        })
+        .catch(err => {
+            console.log(err);
+        });
     }
 
     render() {

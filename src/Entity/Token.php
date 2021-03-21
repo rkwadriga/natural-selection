@@ -2,12 +2,9 @@
 
 namespace App\Entity;
 
-use App\Repository\TokenRepository;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
-use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Security\Core\User\UserInterface;
-use Symfony\Component\Validator\Constraints as Assert;
 use App\Helpers\TimestampableEntity;
+use DateTime;
 
 /**
  * @ORM\Entity(repositoryClass=TokenRepository::class)
@@ -47,7 +44,7 @@ class Token implements TokenInterface
      * @ORM\Column(type="datetime")
      * @Assert\NotBlank
      */
-    private \DateTime $expired_at;
+    private DateTime $expired_at;
 
     /**
      * @ORM\ManyToOne(targetEntity=User::class, inversedBy="tokens")
@@ -85,12 +82,12 @@ class Token implements TokenInterface
         return $this;
     }
 
-    public function getExpiredAt(): \DateTime
+    public function getExpiredAt(): DateTime
     {
         return $this->expired_at;
     }
 
-    public function setExpiredAt(\DateTime $expiredAt): self
+    public function setExpiredAt(DateTime $expiredAt): self
     {
         $this->expired_at = $expiredAt;
         return $this;
@@ -138,7 +135,7 @@ class Token implements TokenInterface
         if ($this->_isAuthenticated !== null) {
             $this->_isAuthenticated;
         }
-        return $this->_isAuthenticated = $this->user !== null && $this->expired_at > (new \DateTime());
+        return $this->_isAuthenticated = $this->user !== null && $this->expired_at > (new DateTime());
     }
 
     public function setAuthenticated(bool $isAuthenticated)
@@ -161,17 +158,17 @@ class Token implements TokenInterface
         $this->__unserialize($attributes);
 
         if (isset($data['created_at'])) {
-            if ($data['created_at'] instanceof \DateTime) {
+            if ($data['created_at'] instanceof DateTime) {
                 $this->created_at = $data['created_at'];
             } elseif (is_string($data['created_at'])) {
-                $this->created_at = new \DateTime($data['created_at']);
+                $this->created_at = new DateTime($data['created_at']);
             }
         }
         if (isset($data['updated_at'])) {
-            if ($data['updated_at'] instanceof \DateTime) {
+            if ($data['updated_at'] instanceof DateTime) {
                 $this->updated_at = $data['updated_at'];
             } elseif (is_string($data['updated_at'])) {
-                $this->created_at = new \DateTime($data['updated_at']);
+                $this->created_at = new DateTime($data['updated_at']);
             }
         }
     }
@@ -210,10 +207,10 @@ class Token implements TokenInterface
         $this->access_token = isset($data['access_token']) ? base64_decode($data['access_token']) : $this->access_token;
         $this->refresh_token = isset($data['refresh_token']) ?  base64_decode($data['refresh_token']) : $this->refresh_token;
         if (isset($data['expired_at'])) {
-            if ($data['expired_at'] instanceof \DateTime) {
+            if ($data['expired_at'] instanceof DateTime) {
                 $this->expired_at = $data['expired_at'];
             } elseif (is_string($data['expired_at'])) {
-                $this->expired_at = new \DateTime($data['expired_at']);
+                $this->expired_at = new DateTime($data['expired_at']);
             }
         }
     }
