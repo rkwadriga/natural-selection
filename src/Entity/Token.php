@@ -5,6 +5,9 @@ namespace App\Entity;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use App\Helpers\TimestampableEntity;
 use DateTime;
+use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
+use App\Repository\TokenRepository;
 
 /**
  * @ORM\Entity(repositoryClass=TokenRepository::class)

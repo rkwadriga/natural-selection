@@ -3,13 +3,13 @@
 namespace App\Entity;
 
 use App\Exception\AuthException;
-use App\Repository\UserRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Core\User\UserInterface;
+use App\Helpers\TimestampableEntity;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
-use App\Helpers\TimestampableEntity;
+use App\Repository\UserRepository;
 
 /**
  * @ORM\Entity(repositoryClass=UserRepository::class)

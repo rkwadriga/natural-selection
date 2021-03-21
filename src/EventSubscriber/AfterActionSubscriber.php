@@ -74,8 +74,9 @@ class AfterActionSubscriber implements EventSubscriberInterface
 
     public function handleResponse(ResponseEvent $event): void
     {
+        $event->getResponse()->headers->add($this->createResponseHeaders());
         if ($event->getRequest()->getMethod() === Request::METHOD_OPTIONS) {
-            $event->setResponse(new Response('', Response::HTTP_NO_CONTENT, $this->createResponseHeaders()));
+            $event->getResponse()->setStatusCode(Response::HTTP_NO_CONTENT);
         }
     }
 

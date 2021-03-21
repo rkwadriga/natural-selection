@@ -43,7 +43,7 @@ class AccessTokenUserProvider implements UserProviderInterface
         $username = $request->get('username');
         $password = $request->get('password');
         if (empty($username) || empty($password)) {
-            throw new AuthException('Params "username" and "password" area required!', Response::HTTP_BAD_REQUEST);
+            throw new AuthException('Params "username" and "password" area required', Response::HTTP_BAD_REQUEST);
         }
         // 2. Try to find user by username and if it`s found check the password
         /** @var User $user */

@@ -10,6 +10,7 @@ class LoginForm extends React.Component {
             email: null,
             password: null
         };
+        this.api = this.props.api;
     }
 
     handleInputChange(event) {
@@ -18,19 +19,13 @@ class LoginForm extends React.Component {
         this.setState(newState);
     }
 
-    handleSubmit(event) {
+    async handleSubmit(event) {
         event.preventDefault();
-
-        fetch('http://localhost:8080/token', {
-            "method": "PUT",
-            "body": JSON.stringify(this.state)
-        })
-        .then(resp => {
-            console.log(resp);
-        })
-        .catch(err => {
-            console.log(err);
+        const result = await this.api.put('/token', {
+            username: this.state.email,
+            password: this.state.password
         });
+        console.log(result);
     }
 
     render() {
