@@ -25,7 +25,7 @@ class LoginForm extends React.Component {
             username: this.state.email,
             password: this.state.password
         });
-        console.log(result);
+        ///console.log(result);
     }
 
     render() {

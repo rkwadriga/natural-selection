@@ -52,6 +52,7 @@ code {
     }
 }
 
-.alert-info {
+.log-alert {
     font-size: medium;
+    text-align: left;
 }

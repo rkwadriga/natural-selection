@@ -4,12 +4,12 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/css/bootstrap-grid.min.css';
 import './static/index.css';
 import reportWebVitals from './reportWebVitals';
-import Config from './Config';
+import config from './config';
 import App from './App';
 
 ReactDOM.render(
     <React.StrictMode>
-        <App config={new Config()} />
+        <App config={config} />
     </React.StrictMode>,
     document.getElementById('root')
 );

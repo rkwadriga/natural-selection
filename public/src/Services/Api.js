@@ -1,6 +1,6 @@
 class Api {
     constructor(config, beforeRequestHandler, successHandler, errorHandler) {
-        this.baseUrl = config.apiUrl;
+        this.baseUrl = config.baseUrl;
         this.beforeRequestHandler = beforeRequestHandler;
         this.successHandler = successHandler;
         this.errorHandler = errorHandler;

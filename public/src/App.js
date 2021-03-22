@@ -1,5 +1,6 @@
 import React from 'react';
-import Api from './Api';
+import Api from './Services/Api';
+import Formatter from './Services/Formatter';
 import LoginForm from './Components/LoginForm';
 import {
     Container,
@@ -12,7 +13,8 @@ class App extends React.Component {
     constructor(props) {
         super(props);
         this.config = props.config;
-        this.api = new Api(this.config);
+        this.api = new Api(this.config.api);
+        this.formatter = new Formatter();
         this.api.beforeRequestHandler = this.handleBeforeRequest.bind(this);
         this.api.successHandler = this.handleSuccessResult.bind(this);
         this.api.errorHandler = this.handleErrorResult.bind(this);
@@ -78,13 +80,17 @@ class App extends React.Component {
 
     handleSuccessResult(result) {
         if (this.config.mode === 'dev') {
-            this.addLogAlert(JSON.stringify(result.data), 0);
+            this.addLogAlert(result.data, 0);
         }
     }
 
     handleErrorResult(result) {
         const lifetime = this.config.mode === 'dev' ? 0 : 5000;
         this.addErrorAlert(result.status + ': ' + result.error, lifetime);
+    }
+
+    componentDidMount() {
+        // Do nothing
     }
 
     render() {
@@ -96,6 +102,7 @@ class App extends React.Component {
                         { this.state.infoAlerts.map((alert, index) => {
                             return (
                                 <Alert
+                                    key={alert.variant + index}
                                     variant={alert.variant}
                                     onClose={() => this.removeInfoAlert(index)}
                                     dismissible
@@ -109,6 +116,7 @@ class App extends React.Component {
                         { this.state.errorAlerts.map((alert, index) => {
                             return (
                                 <Alert
+                                    key={alert.variant + index}
                                     variant={alert.variant}
                                     onClose={() => this.removeErrorAlert(index)}
                                     dismissible
@@ -127,11 +135,13 @@ class App extends React.Component {
                                 return (
                                     <Col>
                                         <Alert
+                                            key={alert.variant + index}
+                                            className="log-alert"
                                             variant={alert.variant}
                                             onClose={() => this.removeLogAlert(index)}
                                             dismissible
                                         >
-                                            { (index  + 1) + ') ' + alert.data }
+                                            { this.formatter.format(alert.data) }
                                         </Alert>
                                     </Col>
                                 );
