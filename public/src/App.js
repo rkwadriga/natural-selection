@@ -1,13 +1,11 @@
 import React from 'react';
+import {Container} from 'react-bootstrap';
 import Api from './Services/Api';
 import Formatter from './Services/Formatter';
-import LoginForm from './Components/LoginForm';
-import {
-    Container,
-    Alert,
-    Row,
-    Col
-} from 'react-bootstrap';
+import Header from "./Content/Header";
+import NotLoggedInBlock from "./Content/NotLoggedInBlock";
+import Body from "./Content/Body";
+import Footer from "./Content/Footer";
 
 class App extends React.Component {
     constructor(props) {
@@ -23,6 +21,7 @@ class App extends React.Component {
             infoAlerts: [],
             errorAlerts: [],
             logAlerts: [],
+            isLoggedIn: false
         };
     }
 
@@ -41,7 +40,7 @@ class App extends React.Component {
     removeLogAlert(index) {
         const alerts = this.state.logAlerts;
         alerts.splice(index, 1);
-        this.setState({logAlerts: alerts})
+        this.setState({logAlerts: alerts});
     }
 
     addInfoAlert(data, lifetime = 5000) {
@@ -98,55 +97,27 @@ class App extends React.Component {
             <div className="App">
                 <header className="App-header">
                     <Container>
-                        { /* Info Alerts */ }
-                        { this.state.infoAlerts.map((alert, index) => {
-                            return (
-                                <Alert
-                                    key={alert.variant + index}
-                                    variant={alert.variant}
-                                    onClose={() => this.removeInfoAlert(index)}
-                                    dismissible
-                                >
-                                    { (index  + 1) + ') ' + alert.data }
-                                </Alert>
-                            );
-                        }) }
+                        <Header
+                            removeInfoAlert={this.removeInfoAlert.bind(this)}
+                            removeErrorAlert={this.removeErrorAlert.bind(this)}
+                            infoAlerts={this.state.infoAlerts}
+                            errorAlerts={this.state.errorAlerts}
+                        />
 
-                        {/* Error Alerts */}
-                        { this.state.errorAlerts.map((alert, index) => {
-                            return (
-                                <Alert
-                                    key={alert.variant + index}
-                                    variant={alert.variant}
-                                    onClose={() => this.removeErrorAlert(index)}
-                                    dismissible
-                                >
-                                    { (index  + 1) + ') ' + alert.data }
-                                </Alert>
-                            );
-                        }) }
+                        {this.state.isLoggedIn
+                            ? <Body
+                                    api={this.api}
+                                />
+                            : <NotLoggedInBlock
+                                    api={this.api}
+                                />
+                        }
 
-                        <LoginForm api={ this.api } />
-
-
-                        <Row>
-                            {/* Log Alerts */}
-                            { this.state.logAlerts.map((alert, index) => {
-                                return (
-                                    <Col>
-                                        <Alert
-                                            key={alert.variant + index}
-                                            className="log-alert"
-                                            variant={alert.variant}
-                                            onClose={() => this.removeLogAlert(index)}
-                                            dismissible
-                                        >
-                                            { this.formatter.format(alert.data) }
-                                        </Alert>
-                                    </Col>
-                                );
-                            }) }
-                        </Row>
+                        <Footer
+                            removeLogAlert={this.removeLogAlert.bind(this)}
+                            logAlerts={this.state.logAlerts}
+                            formatter={this.formatter}
+                        />
                     </Container>
                 </header>
             </div>
