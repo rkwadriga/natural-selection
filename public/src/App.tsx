@@ -2,25 +2,33 @@ import React, {useState} from "react";
 import Header from "./Content/Header";
 import Footer from "./Content/Footer";
 import Alert from "./Content/AlertInterface";
+import Router from "./Content/Router";
+import {useFormatter} from "./Services/Formatter";
+import {useApi, ApiConfig, Request, Response} from "./Services/Api";
 
 interface Props {
     config: {
-        api: {};
+        api: ApiConfig;
         mode: string;
     }
 }
 
-const infoAlertsExamples: Alert[] = [
-    {variant: "default", text: "Info Alert 1"},
-    {variant: "default", text: "Info Alert 2"},
-    {variant: "default", text: "Info Alert 3"},
-];
-
-const App: React.FC<Props> = () => {
+const App: React.FC<Props> = ({config}) => {
+    // Set state
     const [infoAlerts, setInfoAlerts] = useState<Alert[]>([]);
     const [errorAlerts, setErrorAlerts] = useState<Alert[]>([]);
     const [logAlerts, setLogAlerts] = useState<Alert[]>([]);
 
+    const data = {
+        param1: 1,
+        param2: 2
+    }
+
+    console.log(useFormatter());
+    /*const formattedData = useFormatter().format(data);
+    console.log(typeof formattedData);*/
+
+    // Alert functions
     const removeAlert = (index: number, alerts: Alert[], setter: (alerts: Alert[]) => void) => {
         alerts.splice(index, 1);
         setter(alerts);
@@ -44,6 +52,23 @@ const App: React.FC<Props> = () => {
     const addLogAlert = (text: string, lifetime = 5000) => { addAlert("info", text, logAlerts, setLogAlerts, lifetime) };
     const removeLogAlert = (index: number) => { removeAlert(index, logAlerts, setLogAlerts); };
 
+    // Configure router
+    const api = useApi();
+    api.setConfig(config.api);
+    api.setBeforeRequestHandler((request: Request) => {
+        addInfoAlert(request.url);
+        return true;
+    });
+    api.setErrorHandler((response: Response) => {
+        addErrorAlert(response.status + ": " + response.error);
+        return true;
+    });
+    api.setSuccessHandler((response: Response) => {
+        //addLogAlert(response.data);
+        return true;
+    });
+
+
     return (
         <div className="App">
             <header className="App-header">
@@ -53,6 +78,8 @@ const App: React.FC<Props> = () => {
                     errorAlerts={errorAlerts}
                     removeErrorAlert={removeErrorAlert}
                 />
+
+                <Router />
 
                 <Footer
                     logAlerts={logAlerts}
