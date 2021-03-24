@@ -28,6 +28,8 @@ class Api {
     LOGIN_PAGE = '/login';
     REGISTRATION_PAGE = '/registration';
 
+    LOGIN_PATH = '/token';
+
     // @ts-ignore
     #config: ApiConfig;
 
@@ -64,34 +66,55 @@ class Api {
     }
 
     call(request: Request): Response {
+        this.handlePreRequest(request);
+
         const response = {
             isValid: false,
             status: 500,
-            data: {},
+            data: {value1: 1, value2: 2, value3: 3},
             error: {},
             errorContext: {},
         };
+
         return response;
     }
 
-    get(url: string, params: {}, headers: {}): Response {
+    get(url: string, params = {}, headers = {}): Response {
         return this.call(this.createRequest("GET", url, params, headers));
     }
 
-    put(url: string, params: {}, headers: {}): Response {
+    put(url: string, params = {}, headers = {}): Response {
         return this.call(this.createRequest("PUT", url, params, headers));
     }
 
-    post(url: string, params: {}, headers: {}): Response {
+    post(url: string, params = {}, headers = {}): Response {
         return this.call(this.createRequest("POST", url, params, headers));
     }
 
-    delete(url: string, params: {}, headers: {}): Response {
+    delete(url: string, params = {}, headers= {}): Response {
         return this.call(this.createRequest("DELETE", url, params, headers));
     }
 
     createRequest(method: string, path: string, params: {}, headers: {}): Request {
         return {method, path, url: this.#config.baseUrl + path, params, headers};
+    }
+
+    handlePreRequest(request: Request) {
+        if (this.#beforeRequestHandler !== null) {
+            this.#beforeRequestHandler(request);
+        }
+    }
+
+    handleError(response: Response) {
+        if (this.#errorHandler !== null) {
+            this.#errorHandler(response);
+        }
+    }
+
+    handleSuccessError(response: Response) {
+        if (this.#successHandler !== null) {
+            this.#successHandler(response);
+        }
     }
 }
 

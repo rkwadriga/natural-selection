@@ -1,29 +1,48 @@
-import React from "react";
+import React, {useState} from "react";
 import {Button, Form} from "react-bootstrap";
 import {useApi} from "../Services/Api";
+import ValidationException from "../Exceptions/ValidationException";
+
+type FormData = {
+    username: string|null;
+    password: string|null;
+};
 
 interface Props {
 
 }
 
 const LoginForm: React.FC<Props> = () => {
-    const handleInputChange = () => {
-        console.log('handleInputChange');
-    };
-
-    const handleSubmit = () => {
-        console.log('handleSubmit');
-    };
-
     const api = useApi();
-    console.log(api);
+    const [data, setData] = useState<FormData>({username: null, password: null});
+
+    const handleInputChange = (event: any) => {
+        const input = event.target;
+        switch (input.name) {
+            case "username":
+                data.username = input.value;
+                break;
+            case "password":
+                data.password = input.value;
+                break;
+        }
+        setData(data);
+    };
+
+    const handleSubmit = (event: any) => {
+        if (data.username === null || data.password === null) {
+            throw new ValidationException("params \"username\" and \"password\" are required");
+        }
+        api.put(api.LOGIN_PATH, data);
+        event.preventDefault();
+    };
 
     return (
         <div className="LoginForm">
             <Form onSubmit={ handleSubmit }>
                 <Form.Group controlId="login_form_email">
                     <Form.Label>Email</Form.Label>
-                    <Form.Control onChange={ handleInputChange } name="email" type="email" placeholder="Example@mail.com" required />
+                    <Form.Control onChange={ handleInputChange } name="username" type="email" placeholder="Example@mail.com" required />
                 </Form.Group>
 
                 <Form.Group controlId="login_form_password">

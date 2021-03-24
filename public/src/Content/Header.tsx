@@ -1,6 +1,6 @@
 import React from "react";
 import {Alert as AlertBlock} from "react-bootstrap";
-import Alert from "./AlertInterface";
+import {Alert} from "../App";
 
 interface Props {
     infoAlerts: Alert[];
@@ -21,7 +21,7 @@ const Header: React.FC<Props> = ({ infoAlerts, errorAlerts, removeInfoAlert, rem
                         onClose={() => removeInfoAlert(index)}
                         dismissible
                     >
-                        { (index  + 1) + ') ' + alert.text }
+                        {(index  + 1) + ') '} {alert.data}
                     </AlertBlock>
                 );
             }) }
@@ -35,7 +35,7 @@ const Header: React.FC<Props> = ({ infoAlerts, errorAlerts, removeInfoAlert, rem
                         onClose={() => removeErrorAlert(index)}
                         dismissible
                     >
-                        { (index  + 1) + ') ' + alert.text }
+                        {(index  + 1) + ') '} {alert.data}
                     </AlertBlock>
                 );
             }) }

@@ -1,6 +1,6 @@
 import React from "react";
 import {Alert as AlertBlock} from "react-bootstrap";
-import Alert from "./AlertInterface";
+import {Alert} from "../App";
 
 interface Props {
     logAlerts: Alert[];
@@ -20,7 +20,7 @@ const Footer: React.FC<Props> = ({logAlerts, removeLogAlert}) => {
                         onClose={() => removeLogAlert(index)}
                         dismissible
                     >
-                        { alert.text }
+                        { alert.data }
                     </AlertBlock>
                 );
             }) }
