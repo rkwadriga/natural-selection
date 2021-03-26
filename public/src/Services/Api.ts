@@ -23,6 +23,11 @@ export type Response = {
     }|null;
 };
 
+type RequestInfo = {
+    path: string;
+    method: string;
+};
+
 export type PreHandler = (request: Request) => boolean;
 export type PostHandler = (response: Response) => boolean;
 
@@ -32,6 +37,10 @@ class Api {
     REGISTRATION_PAGE = '/registration';
 
     LOGIN_PATH = '/token';
+    REGISTRATION_PATH = '/account';
+
+    LOGIN_REQUEST: RequestInfo = {path: this.LOGIN_PATH, method: "PUT"};
+    REGISTRATION_REQUEST: RequestInfo = {path: this.REGISTRATION_PATH, method: "PUT"};
 
     // @ts-ignore
     #config: ApiConfig;
@@ -68,7 +77,27 @@ class Api {
         this.#successHandler = handler;
     }
 
-    call(request: Request): Promise<Response> {
+    call(request: RequestInfo, params = {}, headers = {}): Promise<Response> {
+        return this.request(this.createRequest(request, params, headers))
+    }
+
+    get(path: string, params = {}, headers = {}): Promise<Response> {
+        return this.call({path, method: "GET"}, params, headers);
+    }
+
+    put(path: string, params = {}, headers = {}): Promise<Response> {
+        return this.call({path, method: "PUT"}, params, headers);
+    }
+
+    post(path: string, params = {}, headers = {}): Promise<Response> {
+        return this.call({path, method: "POST"}, params, headers);
+    }
+
+    delete(path: string, params = {}, headers= {}): Promise<Response> {
+        return this.call({path, method: "DELETE"}, params, headers);
+    }
+
+    request(request: Request): Promise<Response> {
         this.prepareHeaders(request.headers);
         this.handlePreRequest(request);
 
@@ -137,24 +166,8 @@ class Api {
         }
     }
 
-    get(url: string, params = {}, headers = {}): Promise<Response> {
-        return this.call(this.createRequest("GET", url, params, headers));
-    }
-
-    put(url: string, params = {}, headers = {}): Promise<Response> {
-        return this.call(this.createRequest("PUT", url, params, headers));
-    }
-
-    post(url: string, params = {}, headers = {}): Promise<Response> {
-        return this.call(this.createRequest("POST", url, params, headers));
-    }
-
-    delete(url: string, params = {}, headers= {}): Promise<Response> {
-        return this.call(this.createRequest("DELETE", url, params, headers));
-    }
-
-    createRequest(method: string, path: string, params: {}, headers: {}): Request {
-        return {method, path, url: this.#config.baseUrl + path, params, headers};
+    createRequest(request: RequestInfo, params: {}, headers: {}): Request {
+        return {method: request.method, path: request.path, url: this.#config.baseUrl + request.path, params, headers};
     }
 
     handlePreRequest(request: Request): void {
