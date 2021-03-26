@@ -15,9 +15,12 @@ export type Request = {
 export type Response = {
     isValid: boolean;
     status: number;
-    data: {};
-    error: {};
-    errorContext: {};
+    data: {}|null;
+    error: {
+        message: string|null;
+        code: number|null;
+        context: {}|null;
+    }|null;
 };
 
 export type PreHandler = (request: Request) => boolean;
@@ -72,9 +75,8 @@ class Api {
         let response = {
             isValid: false,
             status: 0,
-            data: {},
-            error: {},
-            errorContext: {},
+            data: null,
+            error: null,
         };
 
         return fetch(request.url, {
@@ -90,18 +92,22 @@ class Api {
                 response.data = body;
                 this.handleSuccess(response);
             } else {
-                if (body.error !== undefined) {
-                    response.error = body.error.message;
-                    response.errorContext = body.error.context;
-                } else {
-                    response.error = body;
+                if (body.error === undefined) {
+                    throw {
+                        message: "Invalid response format",
+                        code: null,
+                        context: body,
+                    }
                 }
+                response.error = body.error;
                 this.handleError(response);
             }
             return response;
         }).catch(error => {
+            this.prepareError(error);
             response.isValid = false;
             response.error = error;
+            this.handleError(response);
             return response;
         });
     }
@@ -109,6 +115,25 @@ class Api {
     prepareHeaders(headers: any): void {
         if (headers['Content-Type'] === undefined) {
             headers['Content-Type'] = 'application/json';
+        }
+    }
+
+    prepareError(error: any) {
+        if (typeof error === "string") {
+            error = {
+                message: error,
+                code: 0,
+                context: null,
+            };
+        }
+        if (error.message === undefined) {
+            error.message = JSON.stringify(error);
+        }
+        if (error.code === undefined) {
+            error.code = 0;
+        }
+        if (error.context === undefined) {
+            error.context = null;
         }
     }
 

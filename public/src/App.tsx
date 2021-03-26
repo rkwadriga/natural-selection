@@ -88,7 +88,7 @@ const App: React.FC<Props> = ({config}) => {
     });
     api.setErrorHandler((response: Response) => {
         if (config.mode === 'dev') {
-            addErrorAlert(response.status + ": " + response.error, 0);
+            addErrorAlert(response.status + ": " + response.error?.message + " [" + response.error?.code + "]", 0);
         }
         return true;
     });
