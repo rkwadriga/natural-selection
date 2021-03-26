@@ -29,17 +29,20 @@ const LoginForm: React.FC<Props> = () => {
         setData(data);
     };
 
-    const handleSubmit = (event: any) => {
+    const handleSubmit = async (event: any) => {
+        event.preventDefault();
+
         if (data.username === null || data.password === null) {
             throw new ValidationException("params \"username\" and \"password\" are required");
         }
-        api.put(api.LOGIN_PATH, data);
-        event.preventDefault();
+
+        let response = await api.put(api.LOGIN_PATH, data);
+        console.log(response);
     };
 
     return (
         <div className="LoginForm">
-            <Form onSubmit={ handleSubmit }>
+            <Form onSubmit={handleSubmit}>
                 <Form.Group controlId="login_form_email">
                     <Form.Label>Email</Form.Label>
                     <Form.Control onChange={ handleInputChange } name="username" type="email" placeholder="Example@mail.com" required />

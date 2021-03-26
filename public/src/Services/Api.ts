@@ -65,60 +65,45 @@ class Api {
         this.#successHandler = handler;
     }
 
-    async call(request: Request): Promise<Response> {
+    call(request: Request): Promise<Response> {
         this.prepareHeaders(request.headers);
-
         this.handlePreRequest(request);
 
-        const response = {
+        let response = {
             isValid: false,
-            status: 500,
-            data: {value1: 1, value2: 2, value3: 3},
+            status: 0,
+            data: {},
             error: {},
             errorContext: {},
         };
 
-        const result = await fetch(request.url, {
+        return fetch(request.url, {
             method: request.method,
             headers: request.headers,
             body: JSON.stringify(request.params)
-        }).catch(error => {
-            response.isValid = false;
-            response.error = error;
-        });
-
-        return this.handleResponse(response, result);
-    }
-
-    async handleResponse(response: Response, result: any): Promise<Response> {
-        let body = null;
-        if (result !== undefined) {
-            response.status = result.status;
-            body = await result.json();
-        }
-
-        if (result.status === 200) {
-            response.isValid = true;
-            response.data = body;
-        } else {
-            response.isValid = false;
-            if (body !== null) {
+        }).then(resp => {
+            response.status = resp.status;
+            response.isValid = resp.status === 200;
+            return resp.json();
+        }).then(body => {
+            if (response.isValid) {
+                response.data = body;
+                this.handleSuccess(response);
+            } else {
                 if (body.error !== undefined) {
                     response.error = body.error.message;
                     response.errorContext = body.error.context;
                 } else {
                     response.error = body;
                 }
+                this.handleError(response);
             }
-        }
-
-        if (response.isValid) {
-            this.handleSuccess(response);
-        } else {
-            this.handleError(response);
-        }
-
-        return response;
+            return response;
+        }).catch(error => {
+            response.isValid = false;
+            response.error = error;
+            return response;
+        });
     }
 
     prepareHeaders(headers: any): void {
@@ -127,19 +112,19 @@ class Api {
         }
     }
 
-    async get(url: string, params = {}, headers = {}): Promise<Response> {
+    get(url: string, params = {}, headers = {}): Promise<Response> {
         return this.call(this.createRequest("GET", url, params, headers));
     }
 
-    async put(url: string, params = {}, headers = {}): Promise<Response> {
+    put(url: string, params = {}, headers = {}): Promise<Response> {
         return this.call(this.createRequest("PUT", url, params, headers));
     }
 
-    async post(url: string, params = {}, headers = {}): Promise<Response> {
+    post(url: string, params = {}, headers = {}): Promise<Response> {
         return this.call(this.createRequest("POST", url, params, headers));
     }
 
-    async delete(url: string, params = {}, headers= {}): Promise<Response> {
+    delete(url: string, params = {}, headers= {}): Promise<Response> {
         return this.call(this.createRequest("DELETE", url, params, headers));
     }
 
