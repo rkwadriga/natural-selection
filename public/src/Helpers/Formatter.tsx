@@ -25,14 +25,14 @@ const createElement = (object: any, margin = 0, showOpenTag = true) => {
                 } else if (value === false) {
                     value = "FALSE";
                 }
-                return React.createElement('div', {key: key + "_" + index, style: { "margin-left": (margin + 20) + "px" }},
+                return React.createElement('div', {key: key + "_" + index, style: {marginLeft: margin + 20 }},
                     <div>
                         {key + ": " + (isObjectVal ? (!Array.isArray(value) ? "{" : "[") : "")}
                         {createElement(value, 20, false)}
                     </div>
                 )
             })}
-            {React.createElement('div', {style: {"margin-left": margin + "px"}}, isObject ? "}" : "]")}
+            {React.createElement('div', {style: {marginLeft: margin}}, isObject ? "}" : "]")}
         </div>
     );
 }

@@ -1,6 +1,7 @@
 import React from "react";
 import {Alert as AlertBlock} from "react-bootstrap";
 import {Alert} from "../App";
+import createElement from '../Helpers/Formatter';
 
 interface Props {
     logAlerts: Alert[];
@@ -15,12 +16,12 @@ const Footer: React.FC<Props> = ({logAlerts, removeLogAlert}) => {
                 return (
                     <AlertBlock
                         key={alert.variant + index}
-                        className="log-alert"
+                        className="align-left text-medium"
                         variant={alert.variant}
                         onClose={() => removeLogAlert(index)}
                         dismissible
                     >
-                        { alert.data }
+                        {createElement(alert.data)}
                     </AlertBlock>
                 );
             }) }

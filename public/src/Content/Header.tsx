@@ -1,6 +1,7 @@
 import React from "react";
-import {Alert as AlertBlock} from "react-bootstrap";
+import {Alert as AlertBlock, Row, Col} from "react-bootstrap";
 import {Alert} from "../App";
+import createElement from '../Helpers/Formatter';
 
 interface Props {
     infoAlerts: Alert[];
@@ -18,10 +19,14 @@ const Header: React.FC<Props> = ({ infoAlerts, errorAlerts, removeInfoAlert, rem
                     <AlertBlock
                         key={alert.variant + index}
                         variant={alert.variant}
+                        className='align-left'
                         onClose={() => removeInfoAlert(index)}
                         dismissible
                     >
-                        {(index  + 1) + ') '} {alert.data}
+                        <Row>
+                            <Col xs={1}>{(index  + 1) + ') '}</Col>
+                            <Col>{createElement(alert.data)}</Col>
+                        </Row>
                     </AlertBlock>
                 );
             }) }
@@ -32,10 +37,14 @@ const Header: React.FC<Props> = ({ infoAlerts, errorAlerts, removeInfoAlert, rem
                     <AlertBlock
                         key={alert.variant + index}
                         variant={alert.variant}
+                        className='align-left'
                         onClose={() => removeErrorAlert(index)}
                         dismissible
                     >
-                        {(index  + 1) + ') '} {alert.data}
+                        <Row>
+                            <Col xs={1}>{(index  + 1) + ') '}</Col>
+                            <Col>{createElement(alert.data)}</Col>
+                        </Row>
                     </AlertBlock>
                 );
             }) }

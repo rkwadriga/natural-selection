@@ -1,13 +1,15 @@
 import React, {useState} from "react";
+import {Container} from "react-bootstrap";
 import Header from "./Content/Header";
 import Footer from "./Content/Footer";
 import Router from "./Content/Router";
-import createElement from "./Helpers/Formatter";
 import {useApi, ApiConfig, Request, Response} from "./Services/Api";
+import ComponentException from "./Exceptions/ComponentException";
+import {addElement, removeElement} from "./Helpers/ArrayHelper";
 
 export type Alert = {
     variant: string;
-    data: {};
+    data: any;
 };
 
 interface Props {
@@ -23,41 +25,67 @@ const App: React.FC<Props> = ({config}) => {
     const [errorAlerts, setErrorAlerts] = useState<Alert[]>([]);
     const [logAlerts, setLogAlerts] = useState<Alert[]>([]);
 
+    const VARIANT_INFO = 'primary';
+    const VARIANT_ERROR = 'danger';
+    const VARIANT_LOG = 'info';
+
     // Alert functions
-    const removeAlert = (index: number, alerts: Alert[], setter: (alerts: Alert[]) => void) => {
-        alerts.splice(index, 1);
-        setter(alerts);
-    };
-    const addAlert = (variant: string, data: {}, alerts: Alert[], setter: (alerts: Alert[]) => void, lifetime: number) => {
-        alerts.push({variant, data});
-        setter(alerts);
-        if (lifetime > 0) {
-            setTimeout(() => {
-                removeAlert(alerts.length - 1, alerts, setter);
-            }, lifetime);
+    const addAlert = (variant: string, data: any, lifetime: number) => {
+        let removeFunction;
+        switch (variant) {
+            case VARIANT_INFO:
+                setInfoAlerts(addElement(infoAlerts, {variant, data}));
+                removeFunction = () => {removeAlert(variant, infoAlerts.length - 1)};
+                break;
+            case VARIANT_ERROR:
+                setErrorAlerts(addElement(errorAlerts, {variant, data}));
+                removeFunction = () => {removeAlert(variant, errorAlerts.length - 1)};
+                break;
+            case VARIANT_LOG:
+                setLogAlerts(addElement(logAlerts, {variant, data}));
+                removeFunction = () => {removeAlert(variant, logAlerts.length - 1)};
+                break;
+            default:
+                throw new ComponentException('Invalid alert variant: "' + variant + '"');
         }
-
-        console.log(infoAlerts);
+        if (lifetime > 0) {
+            setTimeout(removeFunction, lifetime);
+        }
+    };
+    const removeAlert = (variant: string, index: number) => {
+        switch (variant) {
+            case VARIANT_INFO:
+                setInfoAlerts(removeElement(infoAlerts, index));
+                break;
+            case VARIANT_ERROR:
+                setErrorAlerts(removeElement(errorAlerts, index));
+                break;
+            case VARIANT_LOG:
+                setLogAlerts(removeElement(logAlerts, index));
+                break;
+            default:
+                throw new ComponentException('Invalid alert variant: "' + variant + '"');
+        }
     };
 
-    const addInfoAlert = (data: any, lifetime = 5000) => { addAlert("primary", createElement(data), infoAlerts, setInfoAlerts, lifetime) };
-    const removeInfoAlert = (index: number) => { removeAlert(index, infoAlerts, setInfoAlerts); };
+    const addInfoAlert = (data: any, lifetime = 5000) => { addAlert(VARIANT_INFO, data, lifetime) };
+    const removeInfoAlert = (index: number) => { removeAlert(VARIANT_INFO, index); };
 
-    const addErrorAlert = (data: any, lifetime = 5000) => { addAlert("danger", createElement(data), errorAlerts, setErrorAlerts, lifetime) };
-    const removeErrorAlert = (index: number) => { removeAlert(index, errorAlerts, setErrorAlerts); };
+    const addErrorAlert = (data: any, lifetime = 5000) => { addAlert(VARIANT_ERROR, data, lifetime) };
+    const removeErrorAlert = (index: number) => { removeAlert(VARIANT_ERROR, index); };
 
-    const addLogAlert = (data: any, lifetime = 5000) => { addAlert("info", createElement(data), logAlerts, setLogAlerts, lifetime) };
-    const removeLogAlert = (index: number) => { removeAlert(index, logAlerts, setLogAlerts); };
+    const addLogAlert = (data: any, lifetime = 0) => { addAlert(VARIANT_LOG, data, lifetime) };
+    const removeLogAlert = (index: number) => { removeAlert(VARIANT_LOG, index); };
 
     // Configure router
     const api = useApi();
     api.setConfig(config.api);
     api.setBeforeRequestHandler((request: Request) => {
-        addInfoAlert(request.url);
+        addInfoAlert(request.method + " " + request.url + " " + JSON.stringify(request.params), config.mode === 'dev' ? 0 : 5000);
         return true;
     });
     api.setErrorHandler((response: Response) => {
-        addErrorAlert(response.status + ": " + response.error);
+        addErrorAlert(response.status + ": " + response.error, config.mode === 'dev' ? 0 : 5000);
         return true;
     });
     api.setSuccessHandler((response: Response) => {
@@ -68,19 +96,20 @@ const App: React.FC<Props> = ({config}) => {
     return (
         <div className="App">
             <header className="App-header">
-                <Header
-                    infoAlerts={infoAlerts}
-                    removeInfoAlert={removeInfoAlert}
-                    errorAlerts={errorAlerts}
-                    removeErrorAlert={removeErrorAlert}
-                />
+                <Container>
+                    <Header
+                        infoAlerts={infoAlerts}
+                        removeInfoAlert={removeInfoAlert}
+                        errorAlerts={errorAlerts}
+                        removeErrorAlert={removeErrorAlert}
+                    />
+                    <Router />
 
-                <Router />
-
-                <Footer
-                    logAlerts={logAlerts}
-                    removeLogAlert={removeLogAlert}
-                />
+                    <Footer
+                        logAlerts={logAlerts}
+                        removeLogAlert={removeLogAlert}
+                    />
+                </Container>
             </header>
         </div>
     );

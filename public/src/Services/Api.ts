@@ -111,7 +111,7 @@ class Api {
         }
     }
 
-    handleSuccessError(response: Response) {
+    handleSuccess(response: Response) {
         if (this.#successHandler !== null) {
             this.#successHandler(response);
         }
