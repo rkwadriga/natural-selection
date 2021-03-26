@@ -43,7 +43,7 @@ class Api {
     #errorHandler: PostHandler|null;
 
     constructor() {
-        this.#config = {baseUrl: "/"};
+        this.#config = {baseUrl: this.HOME_PAGE};
         this.#beforeRequestHandler = (request: Request) => false;
         this.#successHandler = (response: Response) => false;
         this.#errorHandler = (response: Response) => false;
@@ -57,15 +57,17 @@ class Api {
         this.#beforeRequestHandler = handler;
     }
 
-    setSuccessHandler(handler: PostHandler): void {
+    setErrorHandler(handler: PostHandler): void {
         this.#errorHandler = handler;
     }
 
-    setErrorHandler(handler: PostHandler): void {
+    setSuccessHandler(handler: PostHandler): void {
         this.#successHandler = handler;
     }
 
-    call(request: Request): Response {
+    async call(request: Request): Promise<Response> {
+        this.prepareHeaders(request.headers);
+
         this.handlePreRequest(request);
 
         const response = {
@@ -76,22 +78,68 @@ class Api {
             errorContext: {},
         };
 
+        const result = await fetch(request.url, {
+            method: request.method,
+            headers: request.headers,
+            body: JSON.stringify(request.params)
+        }).catch(error => {
+            response.isValid = false;
+            response.error = error;
+        });
+
+        return this.handleResponse(response, result);
+    }
+
+    async handleResponse(response: Response, result: any): Promise<Response> {
+        let body = null;
+        if (result !== undefined) {
+            response.status = result.status;
+            body = await result.json();
+        }
+
+        if (result.status === 200) {
+            response.isValid = true;
+            response.data = body;
+        } else {
+            response.isValid = false;
+            if (body !== null) {
+                if (body.error !== undefined) {
+                    response.error = body.error.message;
+                    response.errorContext = body.error.context;
+                } else {
+                    response.error = body;
+                }
+            }
+        }
+
+        if (response.isValid) {
+            this.handleSuccess(response);
+        } else {
+            this.handleError(response);
+        }
+
         return response;
     }
 
-    get(url: string, params = {}, headers = {}): Response {
+    prepareHeaders(headers: any): void {
+        if (headers['Content-Type'] === undefined) {
+            headers['Content-Type'] = 'application/json';
+        }
+    }
+
+    async get(url: string, params = {}, headers = {}): Promise<Response> {
         return this.call(this.createRequest("GET", url, params, headers));
     }
 
-    put(url: string, params = {}, headers = {}): Response {
+    async put(url: string, params = {}, headers = {}): Promise<Response> {
         return this.call(this.createRequest("PUT", url, params, headers));
     }
 
-    post(url: string, params = {}, headers = {}): Response {
+    async post(url: string, params = {}, headers = {}): Promise<Response> {
         return this.call(this.createRequest("POST", url, params, headers));
     }
 
-    delete(url: string, params = {}, headers= {}): Response {
+    async delete(url: string, params = {}, headers= {}): Promise<Response> {
         return this.call(this.createRequest("DELETE", url, params, headers));
     }
 
@@ -99,19 +147,19 @@ class Api {
         return {method, path, url: this.#config.baseUrl + path, params, headers};
     }
 
-    handlePreRequest(request: Request) {
+    handlePreRequest(request: Request): void {
         if (this.#beforeRequestHandler !== null) {
             this.#beforeRequestHandler(request);
         }
     }
 
-    handleError(response: Response) {
+    handleError(response: Response): void {
         if (this.#errorHandler !== null) {
             this.#errorHandler(response);
         }
     }
 
-    handleSuccess(response: Response) {
+    handleSuccess(response: Response): void {
         if (this.#successHandler !== null) {
             this.#successHandler(response);
         }

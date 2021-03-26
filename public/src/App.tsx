@@ -81,22 +81,28 @@ const App: React.FC<Props> = ({config}) => {
     const api = useApi();
     api.setConfig(config.api);
     api.setBeforeRequestHandler((request: Request) => {
-        addInfoAlert(request.method + " " + request.url + " " + JSON.stringify(request.params), config.mode === 'dev' ? 0 : 5000);
+        if (config.mode === 'dev') {
+            addInfoAlert(request.method + " " + request.url + " " + JSON.stringify(request.params), 0);
+        }
         return true;
     });
     api.setErrorHandler((response: Response) => {
-        addErrorAlert(response.status + ": " + response.error, config.mode === 'dev' ? 0 : 5000);
+        if (config.mode === 'dev') {
+            addErrorAlert(response.status + ": " + response.error, 0);
+        }
         return true;
     });
     api.setSuccessHandler((response: Response) => {
-        addLogAlert(response.data);
+        if (config.mode === 'dev') {
+            addLogAlert(response.data);
+        }
         return true;
     });
 
     return (
         <div className="App">
             <header className="App-header">
-                <Container>
+                <Container fluid>
                     <Header
                         infoAlerts={infoAlerts}
                         removeInfoAlert={removeInfoAlert}

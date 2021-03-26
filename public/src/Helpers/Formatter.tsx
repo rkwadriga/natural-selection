@@ -2,7 +2,7 @@ import React from "react";
 
 const createElement = (object: any, margin = 0, showOpenTag = true) => {
     if (typeof object !== "object") {
-        return React.createElement('div', null, object);
+        return object;
     }
     let index = 0;
     const isObject = !Array.isArray(object);
@@ -18,6 +18,8 @@ const createElement = (object: any, margin = 0, showOpenTag = true) => {
                 }
                 if (typeof value === "string") {
                     value = "\"" + value + "\"";
+                } else if (value === undefined) {
+                    value = "UNDEFINED";
                 } else if (value === null) {
                     value = "NULL";
                 } else if (value === true) {
