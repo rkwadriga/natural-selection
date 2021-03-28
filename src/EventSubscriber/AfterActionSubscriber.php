@@ -2,6 +2,7 @@
 
 namespace App\EventSubscriber;
 
+use App\Exception\ValidationFailedException;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -9,6 +10,8 @@ use Symfony\Component\HttpKernel\Event\ExceptionEvent;
 use Symfony\Component\HttpKernel\Event\ResponseEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\Validator\ConstraintViolation;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use App\Exception\HttpException;
 use App\Exception\AuthException;
 
@@ -54,15 +57,38 @@ class AfterActionSubscriber implements EventSubscriberInterface
             return;
         }
 
+        $code = $exception->getCode();
+        $context = [
+            'file' => $exception->getFile(),
+            'line' => $exception->getLine(),
+        ];
+        if (($previous = $exception->getPrevious()) !== null) {
+            if ($previous instanceof ValidationFailedException) {
+                $code = 'VALIDATION_ERROR';
+                $context = [
+                    'fields' => [],
+                ];
+                foreach ($previous->getViolations() as $violation) {
+                    if (!($violation instanceof ConstraintViolation)) {
+                        continue;
+                    }
+                    $context['fields'][$violation->getPropertyPath()] = [
+                        'value' => $violation->getInvalidValue(),
+                        'error' => $violation->getMessage(),
+                        'code' => $violation->getCode() === UniqueEntity::NOT_UNIQUE_ERROR ? 'NOT_UNIQUE_ERROR' : $violation->getCode(),
+                    ];
+                }
+            } else {
+                $context['file'] = $previous->getFile();
+                $context['line'] = $previous->getLine();
+            }
+        }
+
         $data = [
             'message' => $exception->getMessage(),
-            'code' => $exception->getCode(),
-            'context' => [
-                'file' => $exception->getPrevious() !== null ? $exception->getPrevious()->getFile() : $exception->getFile(),
-                'line' => $exception->getPrevious() !== null ? $exception->getPrevious()->getLine() : $exception->getLine(),
-            ],
+            'code' => $code,
+            'context' => $context,
         ];
-
         $response = new JsonResponse(['error' => $data], $exception->getStatusCode());
 
         $response->headers->add($this->createResponseHeaders());

@@ -18,7 +18,7 @@ export type Response = {
     data: {}|null;
     error: {
         message: string|null;
-        code: number|null;
+        code: number|string|null;
         context: {}|null;
     }|null;
 };

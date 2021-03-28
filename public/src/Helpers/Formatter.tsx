@@ -1,6 +1,6 @@
 import React from "react";
 
-const createElement = (object: any, margin = 0, showOpenTag = true) => {
+const createElement = (object: any, margin = 0, showOpenTag = true): any => {
     if (typeof object !== "object") {
         return object;
     }

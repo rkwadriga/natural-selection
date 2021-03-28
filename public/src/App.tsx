@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, {useState, createContext} from "react";
 import {Container} from "react-bootstrap";
 import Header from "./Content/Header";
 import Footer from "./Content/Footer";
@@ -11,6 +11,23 @@ export type Alert = {
     variant: string;
     data: any;
 };
+
+type AlertsFunctions = {
+    addInfoAlert: (data: any, lifetime: number) => void;
+    removeInfoAlert: (index: number) => void;
+    addErrorAlert: (data: any, lifetime: number) => void;
+    removeErrorAlert: (index: number) => void;
+    addLogAlert: (data: any, lifetime: number) => void;
+    removeLogAlert: (index: number) => void;
+};
+export const AlertsContext = createContext<AlertsFunctions>({
+    addInfoAlert: (data: any, lifetime = 5000) => {},
+    removeInfoAlert: (index: number) => {},
+    addErrorAlert: (data: any, lifetime= 5000) => {},
+    removeErrorAlert: (index: number) => {},
+    addLogAlert: (data: any, lifetime = 5000) => {},
+    removeLogAlert: (index: number) => {}
+});
 
 interface Props {
     config: {
@@ -87,9 +104,9 @@ const App: React.FC<Props> = ({config}) => {
         return true;
     });
     api.setErrorHandler((response: Response) => {
-        if (config.mode === 'dev') {
+        /*if (config.mode === 'dev') {
             addErrorAlert(response.status + ": " + response.error?.message + " [" + response.error?.code + "]", 0);
-        }
+        }*/
         return true;
     });
     api.setSuccessHandler((response: Response) => {
@@ -109,7 +126,12 @@ const App: React.FC<Props> = ({config}) => {
                         errorAlerts={errorAlerts}
                         removeErrorAlert={removeErrorAlert}
                     />
-                    <Router />
+
+                    <AlertsContext.Provider
+                        value={{addInfoAlert, removeInfoAlert, addErrorAlert, removeErrorAlert, addLogAlert, removeLogAlert}}
+                    >
+                        <Router />
+                    </AlertsContext.Provider>
 
                     <Footer
                         logAlerts={logAlerts}

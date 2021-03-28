@@ -6,6 +6,7 @@ use App\Exception\AuthException;
 use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use App\Helpers\TimestampableEntity;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -16,6 +17,7 @@ use App\Repository\UserRepository;
  * @ORM\Table(name="`user`", indexes={
         @ORM\Index(name="user_email_index", columns={"email"})
  * })
+ * @UniqueEntity("email")
  * @ORM\HasLifecycleCallbacks()
  */
 class User implements UserInterface
