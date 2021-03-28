@@ -19,7 +19,7 @@ const Header: React.FC<Props> = ({ infoAlerts, errorAlerts, removeInfoAlert, rem
                     <AlertBlock
                         key={alert.variant + index}
                         variant={alert.variant}
-                        className='align-left'
+                        className='align-left text-medium'
                         onClose={() => removeInfoAlert(index)}
                         dismissible
                     >
@@ -34,7 +34,7 @@ const Header: React.FC<Props> = ({ infoAlerts, errorAlerts, removeInfoAlert, rem
                     <AlertBlock
                         key={alert.variant + index}
                         variant={alert.variant}
-                        className='align-left'
+                        className='align-left text-medium'
                         onClose={() => removeErrorAlert(index)}
                         dismissible
                     >

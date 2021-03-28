@@ -1,7 +1,8 @@
-import React, {useState} from "react";
+import React, {useContext, useState} from "react";
 import {Button, Form} from "react-bootstrap";
-import {useApi} from "../Services/Api";
+import {useApi, LOGIN_REQUEST} from "../Services/Api";
 import ValidationException from "../Exceptions/ValidationException";
+import {AlertsContext} from "../App";
 
 type FormData = {
     username: string|null;
@@ -15,6 +16,7 @@ interface Props {
 const LoginForm: React.FC<Props> = () => {
     const api = useApi();
     const [data, setData] = useState<FormData>({username: null, password: null});
+    const alertFunctions = useContext(AlertsContext);
 
     const handleInputChange = (event: any) => {
         const input = event.target;
@@ -36,8 +38,11 @@ const LoginForm: React.FC<Props> = () => {
             throw new ValidationException("params \"username\" and \"password\" are required");
         }
 
-        let response = await api.put(api.LOGIN_PATH, data);
-        console.log(response);
+        let response = await api.call(LOGIN_REQUEST, data);
+        if (!response.isSuccess) {
+            alertFunctions.addErrorAlert(response.error.message, 5000);
+            return;
+        }
     };
 
     return (

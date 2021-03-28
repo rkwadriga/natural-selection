@@ -1,46 +1,27 @@
 import React, {useState, useContext} from "react";
 import {Button, Form, InputGroup} from "react-bootstrap";
-import {useApi} from "../Services/Api";
+import {useApi, REGISTRATION_REQUEST, VALIDATION_ERROR, NOT_UNIQUE_ERROR} from "../Services/Api";
 import ValidationException from "../Exceptions/ValidationException";
 import {AlertsContext} from "../App";
-import {VALIDATION_ERROR, NOT_UNIQUE_ERROR} from "../Helpers/FormHelper";
 import {setObjectValue} from "../Helpers/ObjectHelper";
-
-type FormData = {
-    email: string|null;
-    name: string|null;
-    password: string|null;
-    repeatPassword: string|null;
-};
 
 interface Props {
 
 }
 
 const RegistrationForm: React.FC<Props> = () => {
-    const defaultData = {email: null, name: null, password: null, repeatPassword: null};
     const api = useApi();
-    const [data, setData] = useState<FormData>(defaultData);
+    const [data, setData] = useState<Record<string, string>>({});
     const [errors, setErrors] = useState<Record<string, string>>({});
     const alertFunctions = useContext(AlertsContext);
 
+    const addError = (field: string, message: string) => {
+        setErrors(setObjectValue(errors, field, message));
+    };
+
     const handleInputChange = (event: any) => {
         const input = event.target;
-        switch (input.name) {
-            case "email":
-                data.email = input.value;
-                break;
-            case "name":
-                data.name = input.value;
-                break;
-            case "password":
-                data.password = input.value;
-                break;
-            case "repeatPassword":
-                data.repeatPassword = input.value;
-                break;
-        }
-        setData(data);
+        setData(setObjectValue(data, input.name, input.value));
     };
 
     const handleSubmit = async (event: any) => {
@@ -51,16 +32,24 @@ const RegistrationForm: React.FC<Props> = () => {
             throw new ValidationException("params \"email\", \"password\" and \"repeatPassword\" are required");
         }
         if (data.password !== data.repeatPassword) {
-            setErrors(setObjectValue(errors, "repeatPassword", "Passwords are not mach"));
+            addError("repeatPassword", "Passwords are not mach");
             return;
         }
 
-        let response = await api.call(api.REGISTRATION_REQUEST, data);
-        if (!response.isValid) {
+        let response = await api.call(REGISTRATION_REQUEST, data);
+        if (!response.isSuccess) {
             const error = response.error;
-            if (error === null) {
-                //alertFunctions.addErrorAlert(error, 0);
-            } else if (error.code === VALIDATION_ERROR) {
+            if (error.code === VALIDATION_ERROR) {
+                const fields = error.context.fields;
+                Object.keys(fields).forEach(key => {
+                    const fieldErrorContext = fields[key];
+                    if (fieldErrorContext.code === NOT_UNIQUE_ERROR) {
+                        addError(key, "User with this email is already registered.");
+                    } else {
+                        addError(key, fieldErrorContext.error);
+                    }
+                })
+            } else {
                 alertFunctions.addErrorAlert(error, 0);
             }
         }

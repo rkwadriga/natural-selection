@@ -3,11 +3,11 @@ export const addElement = (arr: any[], element: any): any[] => {
     return arr.concat([element]);
 };
 
-export const removeElement = (arr: any[], index: number): any[] => {
+export const removeElement = (arr: any[], index: number) => {
     let newArray: any[] = [];
-    arr.map((element, i) => {
+    arr.forEach((value, i) => {
         if (i !== index) {
-            newArray.push(element);
+            newArray.push(value);
         }
     });
     return newArray;
