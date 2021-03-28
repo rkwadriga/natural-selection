@@ -1,6 +1,8 @@
 import React, {useContext, useState} from "react";
+import {useHistory} from "react-router-dom";
 import {Button, Form} from "react-bootstrap";
-import {useApi, LOGIN_REQUEST} from "../Services/Api";
+import {useApi, LOGIN_REQUEST, ACCOUNT_PAGE} from "../Services/Api";
+import {useUser} from "../Services/User";
 import ValidationException from "../Exceptions/ValidationException";
 import {AlertsContext} from "../App";
 
@@ -14,7 +16,9 @@ interface Props {
 }
 
 const LoginForm: React.FC<Props> = () => {
+    const user = useUser();
     const api = useApi();
+    const history = useHistory();
     const [data, setData] = useState<FormData>({username: null, password: null});
     const alertFunctions = useContext(AlertsContext);
 
@@ -43,6 +47,20 @@ const LoginForm: React.FC<Props> = () => {
             alertFunctions.addErrorAlert(response.error.message, 5000);
             return;
         }
+        if (!('access_token' in response.data) || !('refresh_token' in response.data)) {
+            alertFunctions.addErrorAlert({invalid_data: response.data}, 5000);
+            return;
+        }
+
+        // Login user
+        try {
+            await user.logIn(response.data);
+        } catch (e) {
+            alertFunctions.addErrorAlert(e.message, 5000);
+            return;
+        }
+        alertFunctions.addInfoAlert("User + " + user.getName() + " is logged in!", 5000);
+        history.push(ACCOUNT_PAGE);
     };
 
     return (

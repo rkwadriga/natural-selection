@@ -1,6 +1,8 @@
 import React, {useState, useContext} from "react";
+import {useHistory} from "react-router-dom";
 import {Button, Form, InputGroup} from "react-bootstrap";
-import {useApi, REGISTRATION_REQUEST, VALIDATION_ERROR, NOT_UNIQUE_ERROR} from "../Services/Api";
+import {useApi, REGISTRATION_REQUEST, VALIDATION_ERROR, NOT_UNIQUE_ERROR, ACCOUNT_PAGE} from "../Services/Api";
+import {useUser} from "../Services/User";
 import ValidationException from "../Exceptions/ValidationException";
 import {AlertsContext} from "../App";
 import {setObjectValue} from "../Helpers/ObjectHelper";
@@ -11,6 +13,8 @@ interface Props {
 
 const RegistrationForm: React.FC<Props> = () => {
     const api = useApi();
+    const user = useUser();
+    const history = useHistory();
     const [data, setData] = useState<Record<string, string>>({});
     const [errors, setErrors] = useState<Record<string, string>>({});
     const alertFunctions = useContext(AlertsContext);
@@ -52,7 +56,24 @@ const RegistrationForm: React.FC<Props> = () => {
             } else {
                 alertFunctions.addErrorAlert(error, 0);
             }
+            return;
         }
+
+        // Check is response contains token info
+        if (!('access_token' in response.data) || !('refresh_token' in response.data)) {
+            alertFunctions.addErrorAlert({invalid_data: response.data}, 5000);
+            return;
+        }
+
+        // Login user
+        try {
+            await user.logIn(response.data);
+        } catch (e) {
+            alertFunctions.addErrorAlert(e.message, 5000);
+            return;
+        }
+        alertFunctions.addInfoAlert("Hello " + user.getName() + "!", 5000);
+        history.push(ACCOUNT_PAGE);
     };
 
     return (

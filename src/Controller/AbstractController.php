@@ -8,7 +8,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController as BaseControll
  * Class AbstractController
  * @package App\Controller
  *
- * @method getUser(): User
+ * @method \App\Entity\User getUser()
  */
 abstract class AbstractController extends BaseController
 {

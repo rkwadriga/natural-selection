@@ -8,12 +8,15 @@ export const NOT_UNIQUE_ERROR = 'NOT_UNIQUE_ERROR';
 export const HOME_PAGE = '/';
 export const LOGIN_PAGE = '/login';
 export const REGISTRATION_PAGE = '/registration';
+export const ACCOUNT_PAGE = '/account';
 
 export const LOGIN_PATH = '/token';
 export const REGISTRATION_PATH = '/account';
+export const ACCOUNT_PATH = "/account";
 
 export const LOGIN_REQUEST = {path: LOGIN_PATH, method: "PUT"};
 export const REGISTRATION_REQUEST = {path: REGISTRATION_PATH, method: "PUT"};
+export const ACCOUNT_INFO_REQUEST = {path: ACCOUNT_PATH, method: "GET"};
 
 export type ApiConfig = {
     baseUrl: string;
@@ -23,7 +26,7 @@ export type Request = {
     method: string;
     path: string;
     url: string;
-    params: {};
+    params: {}|null;
     headers: {};
 };
 
@@ -55,20 +58,24 @@ type RequestInfo = {
     method: string;
 };
 
+export type TokenInfo = {
+    access_token: string;
+    refresh_token: string;
+};
+
 export type PreHandler = (request: Request) => boolean;
 export type PostHandler = (response: Response) => boolean;
 
-class Api {
+export class Api {
     private config: ApiConfig;
-
+    private token: TokenInfo|null;
     private beforeRequestHandler: PreHandler|null;
-
     private successHandler: PostHandler|null;
-
     private errorHandler: PostHandler|null;
 
     constructor() {
         this.config = {baseUrl: HOME_PAGE};
+        this.token = null;
         this.beforeRequestHandler = (request: Request) => false;
         this.successHandler = (response: Response) => false;
         this.errorHandler = (response: Response) => false;
@@ -76,6 +83,10 @@ class Api {
 
     setConfig(config: ApiConfig): void {
         this.config = config;
+    }
+
+    setToken(token: TokenInfo|null): void {
+        this.token = token;
     }
 
     setBeforeRequestHandler(handler: PreHandler): void {
@@ -90,11 +101,11 @@ class Api {
         this.successHandler = handler;
     }
 
-    call(request: RequestInfo, params = {}, headers = {}): Promise<Response> {
+    call(request: RequestInfo, params: null|{} = null, headers = {}): Promise<Response> {
         return this.request(this.createRequest(request, params, headers))
     }
 
-    get(path: string, params = {}, headers = {}): Promise<Response> {
+    get(path: string, params: null|{} = null, headers = {}): Promise<Response> {
         return this.call({path, method: "GET"}, params, headers);
     }
 
@@ -124,7 +135,7 @@ class Api {
         return fetch(request.url, {
             method: request.method,
             headers: request.headers,
-            body: JSON.stringify(request.params)
+            body: request.params !== null ? JSON.stringify(request.params) : undefined,
         }).then(resp => {
             response.status = resp.status;
             response.isSuccess = resp.status === 200;
@@ -142,6 +153,13 @@ class Api {
             }
             return response;
         }).catch(error => {
+            if (response.status === 405) {
+                error = {
+                    message: "Method not allowed",
+                    code: 405,
+                    context: null,
+                };
+            }
             this.prepareError(error);
             response.isSuccess = false;
             response.error = error;
@@ -153,6 +171,9 @@ class Api {
     prepareHeaders(headers: any): void {
         if (headers['Content-Type'] === undefined) {
             headers['Content-Type'] = 'application/json';
+        }
+        if (headers['X-AUTH-TOKEN'] === undefined && this.token !== null) {
+            headers['X-AUTH-TOKEN'] = this.token.access_token;
         }
     }
 
@@ -175,7 +196,7 @@ class Api {
         }
     }
 
-    createRequest(request: RequestInfo, params: {}, headers: {}): Request {
+    createRequest(request: RequestInfo, params: {}|null, headers: {}): Request {
         return {method: request.method, path: request.path, url: this.config.baseUrl + request.path, params, headers};
     }
 

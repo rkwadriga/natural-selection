@@ -4,6 +4,7 @@ import Header from "./Content/Header";
 import Footer from "./Content/Footer";
 import Router from "./Content/Router";
 import {useApi, ApiConfig, Request, Response} from "./Services/Api";
+import {useUser} from "./Services/User";
 import ComponentException from "./Exceptions/ComponentException";
 import {addElement, removeElement} from "./Helpers/ArrayHelper";
 
@@ -115,6 +116,9 @@ const App: React.FC<Props> = ({config}) => {
         }
         return true;
     });
+
+    // Configure user
+    useUser().setApi(api);
 
     return (
         <div className="App">
