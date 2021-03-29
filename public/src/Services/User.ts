@@ -2,7 +2,7 @@ import { createContext, useContext } from "react"
 import {Api, TokenInfo, ACCOUNT_INFO_REQUEST} from "./Api";
 import UserException from "../Exceptions/UserException";
 
-class User {
+export class User {
     private api: Api|null;
     private token: TokenInfo|null;
     private email: string|null;
@@ -10,23 +10,35 @@ class User {
 
     constructor() {
         this.api = null;
+        this.token = null;
         const token = localStorage.getItem('user.token');
-        this.token = token !== null ? JSON.parse(token) : null;
-        this.email = localStorage.getItem('user.email');
-        this.name = localStorage.getItem('user.name');
+        if (token !== null) {
+            this.setToken(JSON.parse(token), false);
+        }
+        this.email = null;
+        this.name = null;
     }
 
     async logIn(token: TokenInfo): Promise<void> {
         if (this.api === null) {
             throw new UserException("Api component is not installed");
         }
-        this.token = token;
+        this.setToken(token);
         this.api.setToken(token);
-        localStorage.setItem('user.token', JSON.stringify(this.token));
+        await this.initialize();
+    }
+
+    async initialize(): Promise<void> {
+        if (!this.isLoggedIn() || this.isInitialized()) {
+            return;
+        }
+        if (this.api === null) {
+            throw new UserException("Api component is not installed");
+        }
 
         const response = await this.api.call(ACCOUNT_INFO_REQUEST);
         if (!response.isSuccess) {
-            throw new UserException("Can not login user: " + response.error.message);
+            throw new UserException("Can not get user info: " + response.error.message, response.status);
         }
 
         const data = response.data;
@@ -36,26 +48,39 @@ class User {
 
         this.email = data['email'];
         this.name = data['name'];
-        localStorage.setItem('user.email', this.email);
-        localStorage.setItem('user.name', this.name);
+        return;
     }
 
     logOut(): void {
         this.token = null;
         this.email = null;
         this.name = null;
-        localStorage.removeItem('user.token');
-        localStorage.removeItem('user.email');
-        localStorage.removeItem('user.name');
+        this.setToken(null);
         this.api?.setToken(null);
     }
 
     setApi(api: Api): void {
         this.api = api;
+        this.api.setUser(this);
         this.api.setToken(this.token);
     }
+
+    setToken(token: TokenInfo|null, needToUpdateStorage = true): void {
+        this.token = token;
+        if (needToUpdateStorage) {
+            if (this.token !== null) {
+                localStorage.setItem('user.token', JSON.stringify(this.token));
+            } else {
+                localStorage.removeItem('user.token');
+            }
+        }
+    }
+
     isLoggedIn(): boolean {
         return this.token !== null;
+    }
+    isInitialized(): boolean {
+        return this.email !== null;
     }
     getEmail(): string|null {
         return this.email;

@@ -12,3 +12,14 @@ export const removeElement = (arr: any[], index: number) => {
     });
     return newArray;
 };
+
+export const inArray = (item: unknown, arr: unknown[]): boolean => {
+    let result = false;
+    arr.forEach(value => {
+        if (item === value) {
+            result = true;
+            return;
+        }
+    });
+    return result;
+}

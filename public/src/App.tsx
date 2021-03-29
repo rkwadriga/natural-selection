@@ -1,9 +1,10 @@
 import React, {useState, createContext} from "react";
+import { useAsync } from "react-async";
 import {Container} from "react-bootstrap";
 import Header from "./Content/Header";
 import Footer from "./Content/Footer";
 import Router from "./Content/Router";
-import {useApi, ApiConfig, Request, Response} from "./Services/Api";
+import {useApi, ApiConfig, Request, Response, CODE_UNKNOWN_TOKEN} from "./Services/Api";
 import {useUser} from "./Services/User";
 import ComponentException from "./Exceptions/ComponentException";
 import {addElement, removeElement} from "./Helpers/ArrayHelper";
@@ -34,6 +35,17 @@ interface Props {
     config: {
         api: ApiConfig;
         mode: string;
+    }
+}
+
+const initUser = async (props: any) => {
+    try {
+        await props.user.initialize();
+    } catch (e) {
+        props.addErrorAlert(e.message + " (" + e.code + ")");
+        if (e.code === CODE_UNKNOWN_TOKEN) {
+            props.user.logOut();
+        }
     }
 }
 
@@ -95,7 +107,7 @@ const App: React.FC<Props> = ({config}) => {
     const addLogAlert = (data: any, lifetime = 0) => { addAlert(VARIANT_LOG, data, lifetime) };
     const removeLogAlert = (index: number) => { removeAlert(VARIANT_LOG, index); };
 
-    // Configure router
+    // Init router
     const api = useApi();
     api.setConfig(config.api);
     api.setBeforeRequestHandler((request: Request) => {
@@ -117,8 +129,10 @@ const App: React.FC<Props> = ({config}) => {
         return true;
     });
 
-    // Configure user
-    useUser().setApi(api);
+    // Init user
+    const user = useUser();
+    user.setApi(api);
+    useAsync({promiseFn: initUser, user, addErrorAlert});
 
     return (
         <div className="App">

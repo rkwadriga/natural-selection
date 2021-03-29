@@ -1,5 +1,6 @@
 import { createContext, useContext } from "react"
 import ApiException from "../Exceptions/ApiException";
+import {User} from "./User";
 
 export const SYSTEM_ERROR = 'SYSTEM_ERROR';
 export const VALIDATION_ERROR = 'VALIDATION_ERROR';
@@ -15,8 +16,12 @@ export const REGISTRATION_PATH = '/account';
 export const ACCOUNT_PATH = "/account";
 
 export const LOGIN_REQUEST = {path: LOGIN_PATH, method: "PUT"};
+export const REFRESH_TOKEN_REQUEST = {path: LOGIN_PATH, method: "POST"};
 export const REGISTRATION_REQUEST = {path: REGISTRATION_PATH, method: "PUT"};
 export const ACCOUNT_INFO_REQUEST = {path: ACCOUNT_PATH, method: "GET"};
+
+export const CODE_EXPIRED_TOKEN = 401;
+export const CODE_UNKNOWN_TOKEN = 403;
 
 export type ApiConfig = {
     baseUrl: string;
@@ -69,16 +74,20 @@ export type PostHandler = (response: Response) => boolean;
 export class Api {
     private config: ApiConfig;
     private token: TokenInfo|null;
+    private user: User|null;
     private beforeRequestHandler: PreHandler|null;
     private successHandler: PostHandler|null;
     private errorHandler: PostHandler|null;
+    private lastRequest: Request|null;
 
     constructor() {
         this.config = {baseUrl: HOME_PAGE};
         this.token = null;
+        this.user = null;
         this.beforeRequestHandler = (request: Request) => false;
         this.successHandler = (response: Response) => false;
         this.errorHandler = (response: Response) => false;
+        this.lastRequest = null;
     }
 
     setConfig(config: ApiConfig): void {
@@ -87,6 +96,10 @@ export class Api {
 
     setToken(token: TokenInfo|null): void {
         this.token = token;
+    }
+
+    setUser(user: User): void {
+        this.user = user;
     }
 
     setBeforeRequestHandler(handler: PreHandler): void {
@@ -101,8 +114,8 @@ export class Api {
         this.successHandler = handler;
     }
 
-    call(request: RequestInfo, params: null|{} = null, headers = {}): Promise<Response> {
-        return this.request(this.createRequest(request, params, headers))
+    call(request: RequestInfo, params: null|{} = null, headers = {}, isFirstRequest = true): Promise<Response> {
+        return this.request(this.createRequest(request, params, headers), isFirstRequest)
     }
 
     get(path: string, params: null|{} = null, headers = {}): Promise<Response> {
@@ -121,7 +134,7 @@ export class Api {
         return this.call({path, method: "DELETE"}, params, headers);
     }
 
-    request(request: Request): Promise<Response> {
+    request(request: Request, isFirstTry = true): Promise<Response> {
         this.prepareHeaders(request.headers);
         this.handlePreRequest(request);
 
@@ -149,7 +162,7 @@ export class Api {
                     throw new ApiException("Invalid response format", 0, body);
                 }
                 response.error = body.error;
-                this.handleError(response);
+                this.handleError(response, isFirstTry);
             }
             return response;
         }).catch(error => {
@@ -202,13 +215,32 @@ export class Api {
 
     handlePreRequest(request: Request): void {
         if (this.beforeRequestHandler !== null) {
-            this.beforeRequestHandler(request);
+            if (!this.beforeRequestHandler(request)) {
+                return;
+            }
         }
+        this.lastRequest = request;
     }
 
-    handleError(response: Response): void {
+    async handleError(response: Response, isFirstTry = true): Promise<void> {
         if (this.errorHandler !== null) {
-            this.errorHandler(response);
+            if (!this.errorHandler(response)) {
+                return;
+            }
+        }
+        if (!isFirstTry || this.token === null || this.user === null) {
+            return;
+        }
+        if (response.status === CODE_EXPIRED_TOKEN) {
+            // Refresh token
+            const response = await this.call(REFRESH_TOKEN_REQUEST, {refresh_token: this.token.refresh_token}, {}, false);
+            if (!response.isSuccess || !('access_token' in response.data) || !('refresh_token' in response.data)) {
+                return;
+            }
+            this.setToken(response.data);
+            this.user.setToken(response.data);
+            // Reload page
+            window.location.reload();
         }
     }
 

@@ -5,12 +5,14 @@ interface Props {
 
 }
 
+
+
 const Account: React.FC<Props> = () => {
     const user = useUser();
 
     return (
         <div className="Account">
-            <h1>{user.getName()}</h1>
+            <h1>Hello {user.getName()}!</h1>
         </div>
     );
 }
