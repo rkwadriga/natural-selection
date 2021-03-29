@@ -1,9 +1,10 @@
 import React from "react";
-import {LOGIN_PAGE, REGISTRATION_PAGE} from "../Services/Api";
+import {LOGIN_PAGE, REGISTRATION_PAGE, ACCOUNT_PAGE} from "../Services/Api";
 import {BrowserRouter, Route, Redirect, Switch} from "react-router-dom";
 import {useUser} from "../Services/User";
 import Body from "./Body";
 import Auth from "./Auth";
+import Account from "./Account";
 
 interface Props {
 
@@ -12,7 +13,12 @@ interface Props {
 const Router: React.FC<Props> = () => {
     const user = useUser();
     const page = window.location.pathname
-    const needToRedirect = !user.isLoggedIn() && page !== LOGIN_PAGE && page !== REGISTRATION_PAGE;
+    let reDirectPage = null;
+    if (!user.isLoggedIn() && page !== LOGIN_PAGE && page !== REGISTRATION_PAGE) {
+        reDirectPage = LOGIN_PAGE;
+    } else if (user.isLoggedIn() && (page === LOGIN_PAGE || page === REGISTRATION_PAGE)) {
+        reDirectPage = ACCOUNT_PAGE;
+    }
 
     return (
         <div className="Router">
@@ -24,9 +30,12 @@ const Router: React.FC<Props> = () => {
                     <Route path={LOGIN_PAGE}>
                         <Auth />
                     </Route>
+                    <Route path={ACCOUNT_PAGE}>
+                        <Account />
+                    </Route>
                 </Switch>
                 <Route exact path={window.location.pathname}>
-                    {!needToRedirect ? <Body /> : <Redirect to={LOGIN_PAGE} />}
+                    {reDirectPage === null ? <Body /> : <Redirect to={reDirectPage} />}
                 </Route>
             </BrowserRouter>
         </div>
