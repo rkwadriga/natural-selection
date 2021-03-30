@@ -1,7 +1,7 @@
 import React, {useContext, useState} from "react";
 import {useHistory} from "react-router-dom";
 import {Button, Form} from "react-bootstrap";
-import {useApi, LOGIN_REQUEST, ACCOUNT_PAGE} from "../Services/Api";
+import {useApi, LOGIN_REQUEST, ECOSYSTEMS_PAGE} from "../Services/Api";
 import {useUser} from "../Services/User";
 import ValidationException from "../Exceptions/ValidationException";
 import {AlertsContext} from "../App";
@@ -60,7 +60,7 @@ const LoginForm: React.FC<Props> = () => {
             return;
         }
         alertFunctions.addInfoAlert("User + " + user.getName() + " is logged in!", 5000);
-        history.push(ACCOUNT_PAGE);
+        history.push(ECOSYSTEMS_PAGE);
     };
 
     return (

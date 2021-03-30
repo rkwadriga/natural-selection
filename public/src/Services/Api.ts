@@ -9,16 +9,18 @@ export const NOT_UNIQUE_ERROR = 'NOT_UNIQUE_ERROR';
 export const HOME_PAGE = '/';
 export const LOGIN_PAGE = '/login';
 export const REGISTRATION_PAGE = '/registration';
-export const ACCOUNT_PAGE = '/account';
+export const ECOSYSTEMS_PAGE = '/ecosystems';
 
 export const LOGIN_PATH = '/token';
 export const REGISTRATION_PATH = '/account';
 export const ACCOUNT_PATH = "/account";
+export const ECOSYSTEMS_PATH = '/ecosystems';
 
 export const LOGIN_REQUEST = {path: LOGIN_PATH, method: "PUT"};
 export const REFRESH_TOKEN_REQUEST = {path: LOGIN_PATH, method: "POST"};
 export const REGISTRATION_REQUEST = {path: REGISTRATION_PATH, method: "PUT"};
 export const ACCOUNT_INFO_REQUEST = {path: ACCOUNT_PATH, method: "GET"};
+export const ECOSYSTEMS_REQUEST = {path: ECOSYSTEMS_PATH, method: "GET"};
 
 export const CODE_EXPIRED_TOKEN = 401;
 export const CODE_UNKNOWN_TOKEN = 403;

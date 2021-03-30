@@ -1,7 +1,7 @@
 import React, {useState, useContext} from "react";
 import {useHistory} from "react-router-dom";
 import {Button, Form, InputGroup} from "react-bootstrap";
-import {useApi, REGISTRATION_REQUEST, VALIDATION_ERROR, NOT_UNIQUE_ERROR, ACCOUNT_PAGE} from "../Services/Api";
+import {useApi, REGISTRATION_REQUEST, VALIDATION_ERROR, NOT_UNIQUE_ERROR, ECOSYSTEMS_PAGE} from "../Services/Api";
 import {useUser} from "../Services/User";
 import ValidationException from "../Exceptions/ValidationException";
 import {AlertsContext} from "../App";
@@ -73,7 +73,7 @@ const RegistrationForm: React.FC<Props> = () => {
             return;
         }
         alertFunctions.addInfoAlert("Hello " + user.getName() + "!", 5000);
-        history.push(ACCOUNT_PAGE);
+        history.push(ECOSYSTEMS_PAGE);
     };
 
     return (
