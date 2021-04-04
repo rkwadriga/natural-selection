@@ -58,6 +58,9 @@ code {
 .align-left {
     text-align: left;
 }
+.align-right {
+    text-align: right;
+}
 .vertical-align-middle {
     display: flex;
     align-items: center;

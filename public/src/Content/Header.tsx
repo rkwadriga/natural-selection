@@ -2,6 +2,7 @@ import React from "react";
 import {Alert as AlertBlock} from "react-bootstrap";
 import {Alert} from "../App";
 import createElement from '../Helpers/Formatter';
+import TopNavbar from "./TopNavbar";
 
 interface Props {
     infoAlerts: Alert[];
@@ -13,6 +14,7 @@ interface Props {
 const Header: React.FC<Props> = ({ infoAlerts, errorAlerts, removeInfoAlert, removeErrorAlert}) => {
     return (
         <div className="Header">
+            <TopNavbar />
             { /* Info Alerts */ }
             { infoAlerts.map((alert: Alert, index: number) => {
                 return (

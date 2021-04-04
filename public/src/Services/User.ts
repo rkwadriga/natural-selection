@@ -1,5 +1,5 @@
 import { createContext, useContext } from "react"
-import {Api, TokenInfo, ACCOUNT_INFO_REQUEST} from "./Api";
+import {Api, TokenInfo, ACCOUNT_INFO_REQUEST, LOGOUT_REQUEST} from "./Api";
 import UserException from "../Exceptions/UserException";
 
 export class User {
@@ -51,12 +51,22 @@ export class User {
         return;
     }
 
-    logOut(): void {
-        this.token = null;
-        this.email = null;
-        this.name = null;
-        this.setToken(null);
-        this.api?.setToken(null);
+    async logOut(needRequest = true): Promise<void> {
+        if (!this.isLoggedIn()) {
+            return;
+        }
+        const response = needRequest && this.api !== null ? await this.api.call(LOGOUT_REQUEST) : null;
+        if (response === null || response.isSuccess) {
+            this.token = null;
+            this.email = null;
+            this.name = null;
+            this.setToken(null);
+            this.api?.setToken(null);
+        }
+        if (response !== null) {
+            window.location.reload();
+        }
+        return;
     }
 
     setApi(api: Api): void {

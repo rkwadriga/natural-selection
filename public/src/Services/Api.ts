@@ -17,6 +17,7 @@ export const ACCOUNT_PATH = "/account";
 export const ECOSYSTEMS_PATH = '/ecosystems';
 
 export const LOGIN_REQUEST = {path: LOGIN_PATH, method: "PUT"};
+export const LOGOUT_REQUEST = {path: LOGIN_PATH, method: "DELETE"};
 export const REFRESH_TOKEN_REQUEST = {path: LOGIN_PATH, method: "POST"};
 export const REGISTRATION_REQUEST = {path: REGISTRATION_PATH, method: "PUT"};
 export const ACCOUNT_INFO_REQUEST = {path: ACCOUNT_PATH, method: "GET"};
@@ -242,6 +243,9 @@ export class Api {
             this.setToken(response.data);
             this.user.setToken(response.data);
             // Reload page
+            window.location.reload();
+        } else if (response.status === CODE_UNKNOWN_TOKEN) {
+            await this.user.logOut(false);
             window.location.reload();
         }
     }

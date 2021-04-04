@@ -1,5 +1,5 @@
 import React, {useState, createContext} from "react";
-import { useAsync } from "react-async";
+import {useAsync} from "react-async";
 import {Container} from "react-bootstrap";
 import Header from "./Content/Header";
 import Footer from "./Content/Footer";
@@ -136,27 +136,25 @@ const App: React.FC<Props> = ({config}) => {
 
     return (
         <div className="App">
-            <header className="App-header">
-                <Container fluid>
-                    <Header
-                        infoAlerts={infoAlerts}
-                        removeInfoAlert={removeInfoAlert}
-                        errorAlerts={errorAlerts}
-                        removeErrorAlert={removeErrorAlert}
-                    />
+            <Container fluid>
+                <Header
+                    infoAlerts={infoAlerts}
+                    removeInfoAlert={removeInfoAlert}
+                    errorAlerts={errorAlerts}
+                    removeErrorAlert={removeErrorAlert}
+                />
 
-                    <AlertsContext.Provider
-                        value={{addInfoAlert, removeInfoAlert, addErrorAlert, removeErrorAlert, addLogAlert, removeLogAlert}}
-                    >
-                        <Router />
-                    </AlertsContext.Provider>
+                <AlertsContext.Provider
+                    value={{addInfoAlert, removeInfoAlert, addErrorAlert, removeErrorAlert, addLogAlert, removeLogAlert}}
+                >
+                    <Router />
+                </AlertsContext.Provider>
 
-                    <Footer
-                        logAlerts={logAlerts}
-                        removeLogAlert={removeLogAlert}
-                    />
-                </Container>
-            </header>
+                <Footer
+                    logAlerts={logAlerts}
+                    removeLogAlert={removeLogAlert}
+                />
+            </Container>
         </div>
     );
 }
