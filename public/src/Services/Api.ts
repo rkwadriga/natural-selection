@@ -10,11 +10,13 @@ export const HOME_PAGE = '/';
 export const LOGIN_PAGE = '/login';
 export const REGISTRATION_PAGE = '/registration';
 export const ECOSYSTEMS_PAGE = '/ecosystems';
+export const CREATE_ECOSYSTEM_PAGE = '/ecosystem';
 
 export const LOGIN_PATH = '/token';
 export const REGISTRATION_PATH = '/account';
 export const ACCOUNT_PATH = "/account";
 export const ECOSYSTEMS_PATH = '/ecosystems';
+export const CREATE_ECOSYSTEM_PATH = '/ecosystem';
 
 export const LOGIN_REQUEST = {path: LOGIN_PATH, method: "PUT"};
 export const LOGOUT_REQUEST = {path: LOGIN_PATH, method: "DELETE"};
@@ -22,6 +24,7 @@ export const REFRESH_TOKEN_REQUEST = {path: LOGIN_PATH, method: "POST"};
 export const REGISTRATION_REQUEST = {path: REGISTRATION_PATH, method: "PUT"};
 export const ACCOUNT_INFO_REQUEST = {path: ACCOUNT_PATH, method: "GET"};
 export const ECOSYSTEMS_REQUEST = {path: ECOSYSTEMS_PATH, method: "GET"};
+export const CREATE_ECOSYSTEM_REQUEST = {path: CREATE_ECOSYSTEM_PATH, method: "PUT"};
 
 export const CODE_EXPIRED_TOKEN = 401;
 export const CODE_UNKNOWN_TOKEN = 403;

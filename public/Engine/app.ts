@@ -1,11 +1,11 @@
 // cd home-projects/natural-selection/app/public/
 // tsc app.ts && node app.js
 
-import {ConsoleDrawer} from "./Engine/Drawer/ConsoleDrawer";
-import {ConsoleField} from "./Engine/Field/ConsoleField";
-import {Engine} from "./Engine/Engine";
-import {Config} from "./Engine/Config";
-import {ItemType} from "./Engine/Types/ItemType";
+import {ConsoleDrawer} from "./src/Drawer/ConsoleDrawer";
+import {ConsoleField} from "./src/Field/ConsoleField";
+import {Engine} from "./src/Engine";
+import {Config} from "./src/Config";
+import {ItemType} from "./src/Types/ItemType";
 
 let config = new Config({
     width: 90,

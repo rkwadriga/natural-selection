@@ -1,11 +1,17 @@
 import React from "react";
-import {LOGIN_PAGE, REGISTRATION_PAGE, ECOSYSTEMS_PAGE, HOME_PAGE} from "../Services/Api";
+import {
+    HOME_PAGE,
+    LOGIN_PAGE,
+    REGISTRATION_PAGE,
+    ECOSYSTEMS_PAGE,
+    CREATE_ECOSYSTEM_PAGE
+} from "../Services/Api";
 import {BrowserRouter, Route, Redirect, Switch} from "react-router-dom";
 import {inArray} from "../Helpers/ArrayHelper";
 import {useUser} from "../Services/User";
-import Body from "./Body";
 import Auth from "./Auth";
 import Ecosystems from "./Ecosystems";
+import CreateEcosystem from "./Ecosystem/CreateEcosystem";
 
 interface Props {
 
@@ -34,9 +40,12 @@ const Router: React.FC<Props> = () => {
                     <Route path={ECOSYSTEMS_PAGE}>
                         <Ecosystems />
                     </Route>
+                    <Route path={CREATE_ECOSYSTEM_PAGE}>
+                        <CreateEcosystem />
+                    </Route>
                 </Switch>
                 <Route exact path={window.location.pathname}>
-                    {reDirectPage === null ? <Body /> : <Redirect to={reDirectPage} />}
+                    {reDirectPage === null ? null : <Redirect to={reDirectPage} />}
                 </Route>
             </BrowserRouter>
         </div>
