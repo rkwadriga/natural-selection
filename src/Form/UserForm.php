@@ -9,7 +9,6 @@ use Doctrine\Persistence\ManagerRegistry;
 use App\Exception\ValidationFailedException;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
-use Symfony\Component\Validator\ConstraintViolation;
 use Faker\Factory;
 
 class UserForm extends AbstractForm
@@ -56,7 +55,7 @@ class UserForm extends AbstractForm
         return $user;
     }
 
-    private function setAttributes(User $user, Request $request)
+    private function setAttributes(User $user, Request $request): void
     {
         if ($request->get('email') !== null) {
             $user->setEmail($request->get('email'));

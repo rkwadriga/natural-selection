@@ -71,11 +71,11 @@ const EcosystemForm: React.FC<Props> = ({ecosystem}) => {
     const handleSubmit = async (event: any) => {
         event.preventDefault();
 
-        console.log(JSON.stringify(data));
+        //console.log(JSON.stringify(data));
 
-        //const response = await api.call(CREATE_ECOSYSTEM_REQUEST, data);
+        const response = await api.call(CREATE_ECOSYSTEM_REQUEST, data);
 
-        //console.log(response);
+        console.log(response);
     }
 
     const handleAddBacteria = (event: any) => {

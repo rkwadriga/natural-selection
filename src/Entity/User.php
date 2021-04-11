@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use App\Exception\AuthException;
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
@@ -30,6 +31,19 @@ class User implements UserInterface
      * @ORM\Column(type="integer")
      */
     private int $id;
+
+    /**
+     * @var Token[]
+     * @ORM\OneToMany(targetEntity=Token::class, mappedBy="user", orphanRemoval=true)
+     */
+    private $tokens;
+
+    private ?Token $token = null;
+
+    /**
+     * @ORM\OneToMany(targetEntity=Ecosystem::class, mappedBy="user", orphanRemoval=true)
+     */
+    private Collection $ecosystems;
 
     /**
      * @ORM\Column(type="string", length=180, unique=true)
@@ -61,22 +75,90 @@ class User implements UserInterface
      */
     private string $password;
 
-    /**
-     * @var Token[]
-     * @ORM\OneToMany(targetEntity=Token::class, mappedBy="user", orphanRemoval=true)
-     */
-    private $tokens;
-
-    private ?Token $token = null;
-
     public function __construct()
     {
         $this->tokens = new ArrayCollection();
+        $this->ecosystems = new ArrayCollection();
     }
 
     public function getId(): ?int
     {
         return $this->id;
+    }
+
+    /**
+     * @return Token[]
+     */
+    public function getTokens()
+    {
+        return $this->tokens;
+    }
+
+    public function addToken(Token $token): self
+    {
+        if (!$this->tokens->contains($token)) {
+            $this->tokens->add($token);
+            $token->setUser($this);
+        }
+        return $this;
+    }
+
+    public function removeToken(Token $token): self
+    {
+        if ($this->tokens->removeElement($token)) {
+            // set the owning side to null (unless already changed)
+            if ($token->getUser() === $this) {
+                $token->setUser(null);
+            }
+        }
+        if ($this->token === $token) {
+            $this->token = null;
+        }
+        return $this;
+    }
+
+    public function getToken(): Token
+    {
+        if ($this->token === null) {
+            throw new AuthException('User is not logged in', Response::HTTP_FORBIDDEN);
+        }
+        return $this->token;
+    }
+
+    public function setToken(Token $token): self
+    {
+        $this->token = $token;
+        return $this;
+    }
+
+    /**
+     * @return Collection|Ecosystem[]
+     */
+    public function getEcosystems(): Collection
+    {
+        return $this->ecosystems;
+    }
+
+    public function addEcosystem(Ecosystem $ecosystem): self
+    {
+        if (!$this->ecosystems->contains($ecosystem)) {
+            $this->ecosystems[] = $ecosystem;
+            $ecosystem->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeEcosystem(Ecosystem $ecosystem): self
+    {
+        if ($this->ecosystems->removeElement($ecosystem)) {
+            // set the owning side to null (unless already changed)
+            if ($ecosystem->getUser() === $this) {
+                $ecosystem->setUser(null);
+            }
+        }
+
+        return $this;
     }
 
     public function getEmail(): ?string
@@ -150,50 +232,5 @@ class User implements UserInterface
         /*if ($this->token !== null) {
             $this->removeToken($this->token);
         }*/
-    }
-
-    /**
-     * @return Token[]
-     */
-    public function getTokens()
-    {
-        return $this->tokens;
-    }
-
-    public function addToken(Token $token): self
-    {
-        if (!$this->tokens->contains($token)) {
-            $this->tokens->add($token);
-            $token->setUser($this);
-        }
-        return $this;
-    }
-
-    public function removeToken(Token $token): self
-    {
-        if ($this->tokens->removeElement($token)) {
-            // set the owning side to null (unless already changed)
-            if ($token->getUser() === $this) {
-                $token->setUser(null);
-            }
-        }
-        if ($this->token === $token) {
-            $this->token = null;
-        }
-        return $this;
-    }
-
-    public function getToken(): Token
-    {
-        if ($this->token === null) {
-            throw new AuthException('User is not logged in', Response::HTTP_FORBIDDEN);
-        }
-        return $this->token;
-    }
-
-    public function setToken(Token $token): self
-    {
-        $this->token = $token;
-        return $this;
     }
 }
