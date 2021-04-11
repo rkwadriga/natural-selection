@@ -112,7 +112,7 @@ const App: React.FC<Props> = ({config}) => {
     api.setConfig(config.api);
     api.setBeforeRequestHandler((request: Request) => {
         if (config.mode === 'dev') {
-            addInfoAlert(request.method + " " + request.url + " " + JSON.stringify(request.params), 0);
+            addInfoAlert(request.method + " " + request.url, 0);
         }
         return true;
     });

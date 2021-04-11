@@ -22,24 +22,24 @@ const TopNavbar: React.FC<Props> = () => {
         }
     };
 
-    const usersPanel = React.createElement('div', null,
-        <Navbar.Collapse className="justify-content-end">
-            <NavDropdown title={user.getName()} id="basic-nav-dropdown">
-                <NavDropdown.Item onSelect={handleLogout}>Logout</NavDropdown.Item>
-            </NavDropdown>
-        </Navbar.Collapse>
-    );
-    const guestsPanel = React.createElement('div', {className: "justify-content-end"},
-        <Navbar.Collapse className="justify-content-end">
-            <Navbar.Text>Guest</Navbar.Text>
-        </Navbar.Collapse>
-    );
-
     return (
         <Navbar>
             <Nav.Link href={user.isLoggedIn() ? HOME_PAGE : LOGIN_PAGE}>Home</Nav.Link>
             <Navbar.Toggle />
-            {user.isLoggedIn() ? usersPanel : guestsPanel}
+            { user.isLoggedIn()
+                ? (
+                    <Navbar.Collapse className="justify-content-end">
+                        <NavDropdown title={user.getName()} id="basic-nav-dropdown">
+                            <NavDropdown.Item onSelect={handleLogout}>Logout</NavDropdown.Item>
+                        </NavDropdown>
+                    </Navbar.Collapse>
+                )
+                : (
+                    <Navbar.Collapse className="justify-content-end">
+                        <Navbar.Text>Guest</Navbar.Text>
+                    </Navbar.Collapse>
+                )
+            }
         </Navbar>
     );
 }
